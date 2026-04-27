@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>TLpos Pro</title>
+
+<!-- ══ PWA META ══ -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TLpos Pro">
+<meta name="application-name" content="TLpos Pro">
+<meta name="msapplication-TileColor" content="#064C57">
+<meta name="description" content="Ceylon Weighing Machine — Scale Service Manager">
+
+<!-- Apple icons -->
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
+<!-- Splash screens iOS -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--p:#064C57;--pd:#032b31;--pl:#0a6b7a;--bg:#e0e5ec;--ac:#F59E0B;--sl:#ffffff;--sd:#b8bec5;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#333;padding-bottom:120px;margin:0;}
+h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
+
+/* ── PWA Install Banner ── */
+#pwa-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;padding:12px 16px;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+#pwa-banner.show{display:flex;}
+#pwa-banner img{width:38px;height:38px;border-radius:8px;}
+#pwa-banner .pb-text{flex:1;font-size:13px;font-weight:600;}
+#pwa-banner .pb-text small{display:block;font-size:10px;opacity:.8;font-weight:400;}
+#pwa-banner button{background:white;color:#064C57;border:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;}
+#pwa-banner .pb-dismiss{background:transparent;color:rgba(255,255,255,.7);border:none;font-size:18px;padding:4px 8px;cursor:pointer;}
+
+/* ── Offline badge ── */
+#offline-badge{display:none;position:fixed;top:14px;right:14px;z-index:8000;background:#dc2626;color:white;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(220,38,38,.4);}
+#offline-badge.show{display:block;}
+
+/* ── Update toast ── */
+#update-toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:7000;background:#064C57;color:white;border-radius:14px;padding:12px 20px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);white-space:nowrap;gap:10px;align-items:center;}
+#update-toast.show{display:flex;}
+#update-toast button{background:#F59E0B;color:#064C57;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;}
+
+/* Header */
+.app-header{background:linear-gradient(135deg,#064C57 0%,#0a6b7a 50%,#0d8a9e 100%);color:white;padding:16px 20px;border-radius:0 0 30px 30px;box-shadow:0 8px 28px rgba(6,76,87,.45);margin-bottom:18px;position:relative;overflow:hidden;}
+.app-header::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.07);}
+
+/* Stat cards */
+.sc{border-radius:18px;padding:14px 8px;text-align:center;height:100%;position:relative;overflow:hidden;box-shadow:5px 5px 12px var(--sd),-4px -4px 10px var(--sl);transition:transform .18s;}
+.sc:active{transform:scale(.96);}
+.sc1{background:linear-gradient(145deg,#0d8a9e,#064C57);}
+.sc2{background:linear-gradient(145deg,#f97316,#dc2626);}
+.sc3{background:linear-gradient(145deg,#10b981,#059669);}
+.sc4{background:linear-gradient(145deg,#8b5cf6,#6d28d9);}
+.sc::before{content:'';position:absolute;top:-18px;right:-18px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.12);}
+.stat-value{font-size:26px;font-weight:700;color:white;display:block;line-height:1.1;}
+.stat-label{font-size:9px;color:rgba(255,255,255,.85);font-weight:800;text-transform:uppercase;margin-top:4px;letter-spacing:.5px;}
+.si{font-size:20px;margin-bottom:3px;display:block;}
+
+/* Cards */
+.mc{background:var(--bg);border-radius:24px;padding:20px;box-shadow:8px 8px 16px rgba(163,177,198,.6),-8px -8px 16px rgba(255,255,255,.5);margin-bottom:18px;border:none;}
+
+/* Buttons */
+.reb{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:14px;padding:13px;font-weight:700;letter-spacing:1px;width:100%;box-shadow:5px 5px 10px var(--sd),-4px -4px 8px var(--sl);transition:all .2s;font-family:'Rajdhani',sans-serif;font-size:15px;cursor:pointer;}
+.reb:hover{background:linear-gradient(135deg,#0a6b7a,#0d8a9e);}
+.reb:active{box-shadow:inset 3px 3px 6px var(--pd);transform:scale(.98);}
+.rebl{background:var(--bg);color:var(--p);border:none;border-radius:14px;padding:12px;font-weight:700;width:100%;box-shadow:5px 5px 10px var(--sd),-5px -5px 10px var(--sl);transition:all .18s;font-family:'Rajdhani',sans-serif;cursor:pointer;}
+.rebl:active{box-shadow:inset 3px 3px 6px var(--sd);}
+.reb-acc{background:linear-gradient(135deg,#f97316,#dc2626);color:white;border:none;border-radius:14px;padding:12px;font-weight:700;width:100%;font-family:'Rajdhani',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;}
+.reb-grn{background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:14px;padding:12px;font-weight:700;width:100%;font-family:'Rajdhani',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;}
+.reb-ylw{background:linear-gradient(135deg,#F59E0B,#d97706);color:white;border:none;border-radius:14px;padding:12px;font-weight:700;width:100%;font-family:'Rajdhani',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;}
+
+/* Form */
+.fc{background:var(--bg);border:none;border-radius:11px;padding:11px 13px;box-shadow:inset 4px 4px 8px var(--sd),inset -4px -4px 8px var(--sl);color:#333;font-size:14px;width:100%;}
+.fc:focus{outline:none;box-shadow:inset 4px 4px 8px var(--sd),inset -4px -4px 8px var(--sl),0 0 0 2px rgba(6,76,87,.3);}
+.fs{background:var(--bg);border:none;border-radius:11px;padding:11px 13px;box-shadow:inset 4px 4px 8px var(--sd),inset -4px -4px 8px var(--sl);color:#333;font-size:14px;width:100%;appearance:none;}
+.fl{font-size:10px;font-weight:800;color:var(--p);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;display:block;}
+.fg{margin-bottom:12px;}
+
+/* City dropdown */
+.city-drop{position:absolute;top:100%;left:0;right:0;z-index:500;background:white;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-height:180px;overflow-y:auto;display:none;}
+.city-drop.open{display:block;}
+.city-opt{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid #f1f5f9;transition:background .15s;}
+.city-opt:hover{background:#f0f9ff;}
+.city-opt:last-child{border-bottom:none;}
+.city-wrap{position:relative;}
+
+/* Customer autocomplete */
+.cust-drop{position:absolute;top:100%;left:0;right:0;z-index:600;background:white;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:220px;overflow-y:auto;display:none;border:1px solid #e5e7eb;}
+.cust-drop.open{display:block;}
+.cust-opt{padding:12px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;}
+.cust-opt:hover{background:#f0f9ff;}
+.cust-opt:last-child{border-bottom:none;}
+.cust-opt .co-name{font-weight:700;color:#064C57;}
+.cust-opt .co-phone{font-size:11px;color:#64748b;}
+.cust-opt .co-icon{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#064C57,#0a6b7a);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0;}
+
+/* Bottom nav */
+.bnav{position:fixed;bottom:13px;left:13px;right:13px;background:rgba(224,229,236,.97);backdrop-filter:blur(12px);display:flex;justify-content:space-around;padding:11px 0;border-radius:26px;box-shadow:8px 8px 18px var(--sd),-8px -8px 18px var(--sl);z-index:1000;}
+.ni{text-align:center;color:#94a3b8;cursor:pointer;flex:1;border:none;background:none;transition:.25s;}
+.ni.active{color:var(--p);transform:translateY(-5px);}
+.ni i{font-size:19px;}
+.ni span{font-size:9px;display:block;font-weight:800;margin-top:3px;text-transform:uppercase;}
+
+/* Sections */
+.section{display:none;padding:10px;animation:fi .35s ease;}
+.section.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* Quick buttons */
+.qb{background:var(--bg);border:none;border-radius:16px;padding:16px 8px;box-shadow:5px 5px 10px var(--sd),-5px -5px 10px var(--sl);width:100%;cursor:pointer;transition:all .18s;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--p);font-size:13px;letter-spacing:.5px;}
+.qb:active{box-shadow:inset 3px 3px 6px var(--sd);transform:scale(.97);}
+.qb .qi{font-size:24px;display:block;margin-bottom:5px;}
+
+/* Scan */
+.sw{position:relative;border-radius:22px;overflow:hidden;background:#000;min-height:280px;box-shadow:0 8px 28px rgba(0,0,0,.5);}
+#reader{width:100%;min-height:280px;}
+.sf{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;pointer-events:none;z-index:10;}
+.sf::before,.sf::after{content:'';position:absolute;width:36px;height:36px;border-color:#0ff;border-style:solid;}
+.sf::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:5px 0 0 0;}
+.sf::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 5px 0;}
+.sfc-tr,.sfc-bl{position:absolute;width:36px;height:36px;border-color:#0ff;border-style:solid;}
+.sfc-tr{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 5px 0 0;}
+.sfc-bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 5px;}
+.sl-ani{position:absolute;left:8px;right:8px;height:2px;background:linear-gradient(90deg,transparent,#0ff,#00eeff,#0ff,transparent);animation:sm 2s ease-in-out infinite;box-shadow:0 0 8px #0ff;}
+@keyframes sm{0%{top:8px;}50%{top:178px;}100%{top:8px;}}
+.ssb{background:rgba(6,76,87,.85);backdrop-filter:blur(8px);border-radius:18px;padding:9px 14px;color:white;font-size:13px;font-weight:600;text-align:center;margin-top:10px;}
+
+/* Scale box */
+.sb{background:var(--bg);padding:14px;border-radius:18px;margin-bottom:10px;border-left:5px solid #0a6b7a;box-shadow:4px 4px 8px var(--sd),-4px -4px 8px var(--sl);}
+
+/* Weight */
+.ww{position:relative;}
+.ww .kb{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--p);color:white;border-radius:7px;padding:2px 7px;font-size:11px;font-weight:700;pointer-events:none;}
+
+/* Stamp scale list */
+.stamp-scale-item{background:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:3px 3px 7px var(--sd),-3px -3px 7px var(--sl);display:flex;align-items:center;gap:12px;transition:all .2s;}
+.stamp-scale-item.stamped{border-left:4px solid #10b981;background:linear-gradient(135deg,rgba(16,185,129,.05),transparent);}
+.stamp-scale-item.unstamped{border-left:4px solid #e5e7eb;}
+.stamp-check{width:26px;height:26px;border-radius:8px;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.stamp-check.checked{background:linear-gradient(135deg,#10b981,#059669);border-color:#10b981;color:white;}
+.stamp-scale-info{flex:1;}
+.stamp-scale-info .sm{font-weight:700;font-size:13px;color:#064C57;}
+.stamp-scale-info .ss{font-size:11px;color:#64748b;}
+
+/* Keypad */
+.ko{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999;align-items:flex-end;justify-content:center;}
+.ko.open{display:flex;animation:su .28s ease;}
+@keyframes su{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.kp{background:var(--bg);border-radius:26px 26px 0 0;padding:18px;width:100%;max-width:500px;box-shadow:0 -8px 28px rgba(0,0,0,.2);}
+.kd{background:var(--bg);box-shadow:inset 4px 4px 8px var(--sd),inset -4px -4px 8px var(--sl);border-radius:12px;padding:13px 15px;font-size:24px;font-weight:700;color:var(--p);text-align:right;min-height:52px;margin-bottom:14px;font-family:'Rajdhani',sans-serif;letter-spacing:2px;}
+.kg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.keypad-btn{background:var(--bg);border:none;border-radius:14px;padding:16px;font-size:22px;font-weight:700;color:var(--p);box-shadow:4px 4px 8px var(--sd),-4px -4px 8px var(--sl);cursor:pointer;transition:all .13s;}
+.keypad-btn:active{box-shadow:inset 3px 3px 6px var(--sd);transform:scale(.94);}
+.keypad-btn.bd{color:#dc2626;}.keypad-btn.bc{color:#f97316;}
+
+/* Invoice modal */
+.imo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:8000;align-items:center;justify-content:center;padding:12px;}
+.imo.open{display:flex;}
+.im{background:white;border-radius:22px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.ima{background:var(--bg);padding:14px 18px;border-radius:0 0 22px 22px;display:flex;gap:9px;position:sticky;bottom:0;}
+
+/* Invoice print */
+.inv-wrap{font-family:'Inter',sans-serif;color:#111;padding:22px;}
+.inv-hdr{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border-radius:14px;padding:18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.inv-logo-a{display:flex;align-items:center;gap:10px;}
+.inv-logo{width:44px;height:44px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,255,255,.4);}
+.inv-co{font-size:12px;font-weight:700;line-height:1.4;}
+.inv-co small{font-size:10px;opacity:.75;display:block;}
+.inv-no{text-align:right;flex-shrink:0;}
+.inv-no .num{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#F59E0B;}
+.inv-no small{font-size:10px;opacity:.8;display:block;}
+.ist{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;margin-top:14px;}
+.ir{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:13px;}
+.ir:last-child{border-bottom:none;}
+.ir .lbl{color:#64748b;font-size:12px;}.ir .val{font-weight:600;color:#111;}
+.iab{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border-radius:13px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.iab .tl{font-size:11px;opacity:.85;letter-spacing:1px;}.iab .tv{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#F59E0B;}
+.iftr{text-align:center;margin-top:14px;font-size:10px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;}
+
+/* Daily summary btn */
+.day-btn{background:linear-gradient(135deg,#F59E0B,#d97706);border:none;border-radius:18px;padding:16px;width:100%;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;color:white;box-shadow:6px 6px 12px var(--sd),-4px -4px 8px var(--sl);cursor:pointer;transition:all .2s;}
+.day-btn:active{transform:scale(.98);box-shadow:inset 3px 3px 6px rgba(0,0,0,.2);}
+
+/* Admin */
+.admin-lock-area{text-align:center;padding:30px 20px;}
+.admin-lock-area i{font-size:60px;color:var(--p);margin-bottom:14px;display:block;}
+
+/* Customer item */
+.ci{background:var(--bg);padding:14px;border-radius:14px;margin-bottom:9px;box-shadow:4px 4px 8px var(--sd),-4px -4px 8px var(--sl);display:flex;justify-content:space-between;align-items:center;border-left:4px solid var(--pl);cursor:pointer;transition:transform .15s;}
+.ci:active{transform:scale(.97);}
+
+/* QR */
+.qrc{background:white;border-radius:18px;padding:22px;box-shadow:0 8px 28px rgba(0,0,0,.1);display:inline-block;width:100%;max-width:280px;}
+.qrbh{background:linear-gradient(135deg,#8B0000,#B22222);border-radius:10px 10px 0 0;padding:10px;margin:-22px -22px 14px -22px;color:white;font-weight:700;font-size:12px;letter-spacing:1px;}
+.qrcw{display:inline-block;padding:6px;background:white;border:2px solid #e5e7eb;border-radius:10px;}
+
+@media print{
+  body>*:not(#inv-print-area){display:none!important;}
+  #inv-print-area{display:block!important;position:fixed;inset:0;background:white;z-index:99999;padding:16px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- PWA Install Banner -->
+<div id="pwa-banner">
+  <img src="icons/icon-96.png" alt="TLpos">
+  <div class="pb-text">Install TLpos Pro App<small>Home screen eke add karanna</small></div>
+  <button onclick="installPWA()">Install</button>
+  <button class="pb-dismiss" onclick="dismissBanner()">✕</button>
+</div>
+
+<!-- Offline badge -->
+<div id="offline-badge">📵 Offline</div>
+
+<!-- Update toast -->
+<div id="update-toast">
+  🔄 New update ready!
+  <button onclick="reloadForUpdate()">Update Now</button>
+</div>
+
+<div class="app-header d-flex justify-content-between align-items-center">
+  <div style="position:relative;z-index:1;">
+    <h4 class="fw-bold mb-0" style="font-size:21px;letter-spacing:1px;">TLPOS PRO <i class="fas fa-check-circle" style="font-size:15px;color:#F59E0B;"></i></h4>
+    <small id="pg-title" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.8;">DASHBOARD</small>
+  </div>
+  <div class="text-end" style="position:relative;z-index:1;">
+    <div id="live-time" style="font-size:21px;font-weight:700;color:#F59E0B;font-family:'Rajdhani',sans-serif;">--:--</div>
+    <small id="live-date" style="font-size:10px;opacity:.75;"></small>
+  </div>
+</div>
+
+<div class="container" style="max-width:500px;margin:auto;">
+
+<!-- ══ 1. HOME ══ -->
+<div id="s-home" class="section active">
+  <div class="row g-3 mb-3">
+    <div class="col-6"><div class="sc sc1"><span class="si">👥</span><span class="stat-value" id="st-cust">0</span><span class="stat-label">Customers</span></div></div>
+    <div class="col-6"><div class="sc sc2"><span class="si">📋</span><span class="stat-value" id="st-calls">0</span><span class="stat-label">Today Services</span></div></div>
+    <div class="col-6"><div class="sc sc3"><span class="si">💰</span><span class="stat-value" id="st-rev">0</span><span class="stat-label">Revenue (Rs)</span></div></div>
+    <div class="col-6"><div class="sc sc4"><span class="si">🕐</span><span class="stat-value" id="st-stamp">0</span><span class="stat-label">Today Stamps</span></div></div>
+  </div>
+  <div class="d-grid gap-3 mb-3">
+    <button class="reb py-4" onclick="navTo('s-scan');setTimeout(startScanner,350);"><i class="fas fa-qrcode me-2"></i>QR SCANNER</button>
+    <div class="row g-3">
+      <div class="col-6"><button class="qb" onclick="navTo('s-reg')"><span class="qi">👤</span>Register</button></div>
+      <div class="col-6"><button class="qb" onclick="navTo('s-list');loadDir();"><span class="qi">📋</span>Directory</button></div>
+    </div>
+    <div class="row g-3">
+      <div class="col-6"><button class="qb" onclick="navTo('s-reports')"><span class="qi">📊</span>Reports</button></div>
+      <div class="col-6"><button class="qb" onclick="openAdmin()"><span class="qi">⚙️</span>Admin</button></div>
+    </div>
+  </div>
+  <button class="day-btn mb-3" onclick="generateDailySummary()">
+    <i class="fas fa-calendar-day me-2"></i>📤 DAILY SUMMARY — SEND TODAY'S REPORT
+  </button>
+  <div class="mc" style="padding:14px;">
+    <small class="fw-bold text-muted text-uppercase" style="font-size:10px;letter-spacing:1px;">⚙️ System Tools</small>
+    <div class="d-flex gap-2 mt-2">
+      <button class="rebl" style="font-size:12px;" onclick="exportDatabase()"><i class="fas fa-file-export me-1"></i>Backup</button>
+      <button class="rebl" style="font-size:12px;" onclick="importDatabase()"><i class="fas fa-file-import me-1"></i>Restore</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2. REGISTER ══ -->
+<div id="s-reg" class="section">
+  <div class="mc">
+    <h6 class="fw-bold mb-3 text-center" style="color:var(--p);letter-spacing:1px;">CUSTOMER REGISTRATION</h6>
+    <div class="fg"><span class="fl">Customer Name *</span><input type="text" id="rg-name" class="fc" placeholder="පාරිභෝගික නම"></div>
+    <div class="row g-2 mb-0">
+      <div class="col-6 fg"><span class="fl">Phone *</span><input type="text" id="rg-phone" class="fc" placeholder="දුරකථනය" readonly onclick="openKp('rg-phone')" style="cursor:pointer;"></div>
+      <div class="col-6 fg"><span class="fl">NIC</span><input type="text" id="rg-nic" class="fc" placeholder="NIC"></div>
+    </div>
+    <div class="fg"><span class="fl">Address Line 1 (Street / Lane)</span><input type="text" id="rg-addr1" class="fc" placeholder="No. 12, Main Street, Galle Road"></div>
+    <div class="fg city-wrap">
+      <span class="fl">Nearest City / Town</span>
+      <input type="text" id="rg-addr2" class="fc" placeholder="Type city name..." autocomplete="off" oninput="citySuggest(this,'rg-cd')" onblur="setTimeout(()=>closeDrop('rg-cd'),200)">
+      <div class="city-drop" id="rg-cd"></div>
+    </div>
+    <div class="fg">
+      <div class="d-flex gap-2">
+        <button class="rebl" style="width:auto;padding:10px 16px;font-size:12px;" onclick="fetchGPS()"><i class="fas fa-location-dot me-1"></i>GPS</button>
+        <small id="gps-status" class="text-success fw-bold align-self-center" style="font-size:10px;"></small>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="fl mb-0">⚖️ Scale Details</span>
+      <button style="background:var(--p);color:white;border:none;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;" onclick="addScaleRow()">+ Add Scale</button>
+    </div>
+    <div id="scales-list">
+      <div class="sb">
+        <input type="text" class="fc s-model mb-2" placeholder="Model">
+        <div class="row g-2">
+          <div class="col-6"><input type="text" class="fc s-serial" placeholder="Serial No."></div>
+          <div class="col-6 ww"><input type="text" class="fc s-weight" placeholder="Weight" oninput="fmtW(this)"><span class="kb">kg</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="reb w-100 py-3 mt-2" onclick="saveCustomer()"><i class="fas fa-qrcode me-2"></i>SAVE & GENERATE QR</button>
+  </div>
+  <div id="qr-result-area" class="mc text-center" style="display:none;">
+    <div class="mb-2"><span class="fw-bold" style="color:var(--p);font-size:12px;letter-spacing:1px;">✅ QR GENERATED</span></div>
+    <div id="print-area" class="d-flex justify-content-center">
+      <div class="qrc">
+        <div class="qrbh"><div style="font-size:9px;letter-spacing:2px;opacity:.85;">CEYLON WEIGHING MACHINE LTD</div><div id="p-cust-name" style="font-size:15px;margin-top:3px;"></div></div>
+        <div class="qrcw"><div id="qrcode-box"></div></div>
+        <div style="margin-top:10px;font-size:9px;color:#666;letter-spacing:1px;font-weight:600;">TLpos Pro • Service Manager</div>
+        <div style="font-size:8px;color:#999;margin-top:2px;" id="p-qr-id"></div>
+      </div>
+    </div>
+    <button class="reb w-100 mt-3" onclick="printQR()"><i class="fas fa-print me-2"></i>PRINT QR CARD</button>
+  </div>
+</div>
+
+<!-- ══ 3. SCAN ══ -->
+<div id="s-scan" class="section text-center">
+  <div class="mc">
+    <h6 class="fw-bold mb-3" style="color:var(--p);letter-spacing:1px;">📷 QR SCANNER</h6>
+    <div class="sw">
+      <div id="reader"></div>
+      <div class="sf" id="scan-frame" style="display:none;"><div class="sfc-tr"></div><div class="sfc-bl"></div><div class="sl-ani"></div></div>
+    </div>
+    <div id="ssb" class="ssb mt-2"><i class="fas fa-camera me-2"></i>Press START to scan</div>
+    <div id="scan-err" class="text-danger small mt-1"></div>
+    <button class="reb mt-3 py-3" id="start-btn" onclick="startScanner()"><i class="fas fa-play me-2"></i>START CAMERA</button>
+    <button class="btn btn-link text-danger mt-1 fw-bold" style="display:none;" id="stop-btn" onclick="stopScanner()"><i class="fas fa-stop me-1"></i>Stop</button>
+  </div>
+</div>
+
+<!-- ══ 4. SERVICE PAGE ══ -->
+<div id="s-service" class="section">
+  <div class="mc">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0" style="color:var(--p);letter-spacing:1px;">🔧 SERVICE ENTRY</h6>
+      <span id="svc-inv-no" style="font-family:'Rajdhani',sans-serif;font-size:12px;color:#64748b;font-weight:700;"></span>
+    </div>
+    <div class="fg" style="position:relative;">
+      <span class="fl">Search Customer (Name / Phone)</span>
+      <input type="text" id="svc-search" class="fc" placeholder="Type to search from database..." autocomplete="off"
+             oninput="custSearch(this.value)" onblur="setTimeout(()=>closeDrop('cust-dd'),250)">
+      <div class="cust-drop" id="cust-dd"></div>
+    </div>
+    <div id="svc-scale-sel-wrap" style="display:none;" class="fg">
+      <span class="fl">Select Scale</span>
+      <select id="svc-scale-sel" class="fs" onchange="fillScaleFields()"></select>
+    </div>
+    <div class="row g-2">
+      <div class="col-12 fg"><span class="fl">Customer Name</span><input type="text" id="svc-name" class="fc" placeholder="Customer Name"></div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6 fg"><span class="fl">Phone</span><input type="text" id="svc-phone" class="fc" placeholder="Phone" readonly onclick="openKp('svc-phone')" style="cursor:pointer;"></div>
+      <div class="col-6 fg"><span class="fl">NIC / ID</span><input type="text" id="svc-nic" class="fc" placeholder="NIC"></div>
+    </div>
+    <div class="fg"><span class="fl">Address Line 1</span><input type="text" id="svc-addr1" class="fc" placeholder="Street / Lane"></div>
+    <div class="fg city-wrap">
+      <span class="fl">Nearest City / Town</span>
+      <input type="text" id="svc-addr2" class="fc" placeholder="City..." autocomplete="off" oninput="citySuggest(this,'svc-cd')" onblur="setTimeout(()=>closeDrop('svc-cd'),200)">
+      <div class="city-drop" id="svc-cd"></div>
+    </div>
+    <div class="row g-2">
+      <div class="col-12 fg"><span class="fl">Scale Model</span><input type="text" id="svc-model" class="fc" placeholder="Model"></div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6 fg"><span class="fl">Serial No.</span><input type="text" id="svc-serial" class="fc" placeholder="Serial"></div>
+      <div class="col-6 fg ww"><span class="fl">Weight</span><input type="text" id="svc-weight" class="fc" placeholder="Weight" oninput="fmtW(this)"><span class="kb" style="top:calc(50% + 10px);">kg</span></div>
+    </div>
+    <div class="row g-2">
+      <div class="col-6 fg"><span class="fl">Service Date</span><input type="date" id="svc-date" class="fc"></div>
+      <div class="col-6 fg"><span class="fl">Amount (Rs)</span><input type="number" id="svc-amount" class="fc" placeholder="0.00"></div>
+    </div>
+    <div class="fg"><span class="fl">Service Notes</span><textarea id="svc-notes" class="fc" rows="3" placeholder="Parts replaced, issues found..."></textarea></div>
+    <input type="hidden" id="svc-qrid">
+    <button class="reb w-100 py-3" onclick="generateInvoice()"><i class="fas fa-file-invoice me-2"></i>GENERATE INVOICE</button>
+  </div>
+</div>
+
+<!-- ══ 5. STAMP PAGE ══ -->
+<div id="s-stamp" class="section">
+  <div class="mc">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0" style="color:var(--p);letter-spacing:1px;">📅 STAMP ENTRY</h6>
+      <span id="stamp-cust-name" style="font-family:'Rajdhani',sans-serif;font-size:13px;color:#0a6b7a;font-weight:700;"></span>
+    </div>
+    <div class="mb-3" style="background:linear-gradient(135deg,rgba(6,76,87,.06),rgba(10,107,122,.04));border-radius:12px;padding:12px;">
+      <div style="font-size:12px;color:#64748b;font-weight:700;" id="stamp-cust-info"></div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="fl mb-0">⚖️ Select Scales to Stamp</span>
+      <div class="d-flex gap-2">
+        <button style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;" onclick="stampSelectAll(true)">✅ All</button>
+        <button style="background:var(--bg);color:var(--p);border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:2px 2px 5px var(--sd),-2px -2px 5px var(--sl);" onclick="stampSelectAll(false)">☐ None</button>
+      </div>
+    </div>
+    <div id="stamp-scales-list"></div>
+    <button class="reb-grn w-100 py-3 mt-2" onclick="saveStamp()"><i class="fas fa-check-circle me-2"></i>SAVE STAMP RECORD</button>
+  </div>
+</div>
+
+<!-- ══ 6. DIRECTORY ══ -->
+<div id="s-list" class="section">
+  <div class="mc">
+    <input type="text" id="search-input" class="fc mb-3" placeholder="🔍 සෙවීම (නම / දුරකථනය)..." oninput="filterDir()">
+    <div id="cust-dir"></div>
+  </div>
+</div>
+
+<!-- ══ 7. REPORTS ══ -->
+<div id="s-reports" class="section">
+  <div class="mc">
+    <h6 class="fw-bold mb-3" style="color:var(--p);">📊 Report Export</h6>
+    <div class="row g-2 mb-4">
+      <div class="col-6"><input type="date" id="rpt-from" class="fc"></div>
+      <div class="col-6"><input type="date" id="rpt-to" class="fc"></div>
+    </div>
+    <div class="d-grid gap-3">
+      <button class="rebl py-3 text-start" onclick="exportData('service')"><i class="fas fa-file-invoice-dollar me-2" style="color:#f97316;"></i>Service Report</button>
+      <button class="rebl py-3 text-start" onclick="exportData('stamp')"><i class="fas fa-calendar-check me-2" style="color:#10b981;"></i>Stamp Report</button>
+      <button class="rebl py-3 text-start" onclick="exportData('invoices')"><i class="fas fa-receipt me-2" style="color:#0a6b7a;"></i>Invoice History</button>
+      <button class="rebl py-3 text-start" onclick="exportData('customers')"><i class="fas fa-users me-2" style="color:#8b5cf6;"></i>Full Customer List</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 8. ADMIN ══ -->
+<div id="s-admin" class="section">
+  <div id="adm-lock" class="mc admin-lock-area">
+    <i class="fas fa-lock"></i>
+    <h5 class="fw-bold mb-1" style="color:var(--p);">ADMIN PANEL</h5>
+    <p class="text-muted small mb-4">Enter password to continue</p>
+    <input type="password" id="adm-pw" class="fc mb-3 text-center" style="font-size:20px;letter-spacing:8px;max-width:200px;margin:0 auto 12px;" placeholder="••••" maxlength="10">
+    <button class="reb py-3" onclick="checkAdmPw()"><i class="fas fa-unlock me-2"></i>UNLOCK</button>
+  </div>
+  <div id="adm-content" style="display:none;">
+    <div class="mc">
+      <h6 class="fw-bold mb-4" style="color:var(--p);letter-spacing:1px;">⚙️ ADMIN SETTINGS</h6>
+      <div class="fg"><span class="fl">📧 Invoice Email Recipient</span><input type="email" id="adm-email" class="fc" placeholder="admin@example.com"></div>
+      <div class="fg"><span class="fl">🏢 Company Name</span><input type="text" id="adm-company" class="fc" placeholder="Ceylon Weighing Machine Limited"></div>
+      <div class="fg"><span class="fl">📞 Company Phone</span><input type="text" id="adm-cphone" class="fc" placeholder="+94 XX XXX XXXX"></div>
+      <button class="reb w-100 py-3 mb-3" onclick="saveAdmSettings()"><i class="fas fa-save me-2"></i>SAVE SETTINGS</button>
+      <hr style="border-color:rgba(0,0,0,.1);">
+      <button class="reb-acc w-100 py-2 mt-2" onclick="lockAdm()"><i class="fas fa-lock me-2"></i>Lock Panel</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- Bottom Nav -->
+<nav class="bnav">
+  <button class="ni active" id="n-home" onclick="navTo('s-home')"><i class="fas fa-home"></i><span>Home</span></button>
+  <button class="ni" id="n-scan" onclick="navTo('s-scan');setTimeout(startScanner,350);"><i class="fas fa-qrcode"></i><span>Scan</span></button>
+  <button class="ni" id="n-reg" onclick="navTo('s-reg')"><i class="fas fa-user-plus"></i><span>Register</span></button>
+  <button class="ni" id="n-list" onclick="navTo('s-list');loadDir();"><i class="fas fa-address-book"></i><span>List</span></button>
+  <button class="ni" id="n-rpt" onclick="navTo('s-reports')"><i class="fas fa-chart-bar"></i><span>Reports</span></button>
+</nav>
+
+<!-- Keypad -->
+<div class="ko" id="kp-overlay" onclick="closeKpBg(event)">
+  <div class="kp">
+    <div style="font-weight:700;color:var(--p);font-size:13px;letter-spacing:1px;margin-bottom:10px;">📱 ENTER PHONE NUMBER</div>
+    <div class="kd" id="kp-disp">_</div>
+    <div class="kg">
+      <button class="keypad-btn" onclick="kpP('1')">1</button><button class="keypad-btn" onclick="kpP('2')">2</button><button class="keypad-btn" onclick="kpP('3')">3</button>
+      <button class="keypad-btn" onclick="kpP('4')">4</button><button class="keypad-btn" onclick="kpP('5')">5</button><button class="keypad-btn" onclick="kpP('6')">6</button>
+      <button class="keypad-btn" onclick="kpP('7')">7</button><button class="keypad-btn" onclick="kpP('8')">8</button><button class="keypad-btn" onclick="kpP('9')">9</button>
+      <button class="keypad-btn bc" onclick="kpClr()">CLR</button><button class="keypad-btn" onclick="kpP('0')">0</button><button class="keypad-btn bd" onclick="kpDel()">⌫</button>
+    </div>
+    <button class="reb w-100 mt-3 py-3" onclick="kpDone()"><i class="fas fa-check me-2"></i>CONFIRM</button>
+  </div>
+</div>
+
+<!-- Invoice Modal -->
+<div class="imo" id="inv-modal">
+  <div class="im">
+    <div id="inv-preview"></div>
+    <div class="ima">
+      <button class="reb-grn flex-fill py-3" onclick="printInvoice()"><i class="fas fa-print me-2"></i>PRINT</button>
+      <button class="reb flex-fill py-3" onclick="dlInvExcel()"><i class="fas fa-file-excel me-2"></i>EXCEL</button>
+      <button class="reb-acc" style="width:46px;border-radius:12px;" onclick="closeInvModal()"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+</div>
+
+<div id="inv-print-area" style="display:none;"></div>
+
+<script>
+// ════════════════════════════════════════════
+const LOGO_B64 = "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";
+const ADM_PW = "1990";
+
+const SL_CITIES = ["Colombo","Dehiwala","Moratuwa","Sri Jayawardenepura Kotte","Negombo","Kandy","Galle","Trincomalee","Batticaloa","Jaffna","Anuradhapura","Polonnaruwa","Kurunegala","Ratnapura","Badulla","Matara","Hambantota","Vavuniya","Mannar","Nuwara Eliya","Gampaha","Kalutara","Matale","Kegalle","Monaragala","Ampara","Mullaitivu","Kilinochchi","Puttalam","Chilaw","Wennappuwa","Ja-Ela","Kadawatha","Maharagama","Kotte","Boralesgamuwa","Homagama","Piliyandala","Kesbewa","Nugegoda","Rajagiriya","Peliyagoda","Wattala","Hendala","Kandana","Ganemulla","Minuwangoda","Katunayake","Seeduwa","Ekala","Ragama","Kiribathgoda","Kelaniya","Dalugama","Biyagama","Avissawella","Padukka","Hanwella","Dompe","Nittambuwa","Divulapitiya","Mirigama","Veyangoda","Alawwa","Meerigama","Kuliyapitiya","Polgahawela","Narammala","Pannala","Bingiriya","Wariyapola","Maho","Nikaweratiya","Ibbagamuwa","Giriulla","Hettipola","Melsiripura","Dambadeniya","Kobeigane","Kekirawa","Habarana","Eppawala","Talawa","Medawachchiya","Kahatagasdigiliya","Galenbindunuwewa","Tambuttegama","Nochchiyagama","Rajanganaya","Mihintale","Hatton","Talawakele","Nawalapitiya","Ginigathena","Maskeliya","Watawala","Kotagala","Bogawantalawa","Haputale","Welimada","Bandarawela","Ella","Diyatalawa","Mahiyanganaya","Passara","Lunugala","Hali-Ela","Kalmunai","Akkaraipattu","Pottuvil","Sammanthurai","Nintavur","Sainthamaruthu","Karaitivu","Lahugala","Mahaoya","Dehiattakandiya","Uhana","Horana","Panadura","Wadduwa","Beruwala","Aluthgama","Bentota","Balapitiya","Ambalangoda","Hikkaduwa","Unawatuna","Weligama","Mirissa","Dikwella","Tangalle","Beliatta","Tissamaharama","Ambalantota","Embilipitiya","Balangoda","Rakwana","Pelmadulla","Eheliyagoda","Kinniya","Muttur","Seruwila","Kantale","Morawewa","Nilaveli","Valaichenai","Eravur","Chenkaladi","Kattankudy","Vakarai","Musali","Madhu","Puthukkudiyiruppu","Oddusuddan","Paranthan","Nallur","Chavakachcheri","Point Pedro","Chankanai","Kopay","Uduvil","Manipay","Tellippalai","Chunnakam","Nelliady","Karainagar","Kayts","Velanai","Pooneryn","Kankesanthurai"];
+
+// ════ DB ════
+const db = new Dexie("TLpos_V3_DB");
+db.version(3).stores({
+  customers: '++id, qr_id, name, phone, nic, addr1, addr2, gps, scales',
+  logs:      '++id, cust_id, cust_name, date, amount, type, notes, stamp_scales',
+  invoices:  '++id, inv_no, cust_id, cust_name, date, amount, model, serial, weight, notes, phone, nic, addr1, addr2'
+});
+
+let gps="", html5QrCode=null, scanning=false;
+let kpTgt=null, kpVal="";
+let curInv=null;
+let stampCust=null, stampChecks={};
+
+// ════ CLOCK ════
+(function tick(){
+  const n=new Date();
+  document.getElementById('live-time').innerText=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('live-date').innerText=n.toDateString();
+  setTimeout(tick,1000);
+})();
+
+// ════ NAV ════
+const NM={'s-home':'n-home','s-scan':'n-scan','s-reg':'n-reg','s-list':'n-list','s-reports':'n-rpt'};
+function navTo(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const nid=NM[id]; if(nid){const e=document.getElementById(nid);if(e)e.classList.add('active');}
+  document.getElementById('pg-title').innerText=id.split('-')[1].toUpperCase();
+  if(id!=='s-scan') stopScanner();
+  updateStats();
+}
+
+// ════ GPS ════
+function fetchGPS(){
+  const st=document.getElementById('gps-status');
+  if(!navigator.geolocation){st.innerText="❌ GPS not supported";st.style.color="#dc2626";return;}
+  st.innerText="📡 Searching...";st.style.color="#0a6b7a";
+  navigator.geolocation.getCurrentPosition(
+    p=>{
+      gps=p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6);
+      st.innerText="✅ "+gps;st.style.color="#10b981";
+    },
+    err=>{
+      let msg="❌ GPS failed";
+      if(err.code===1) msg="❌ Permission denied — Enable location in browser settings";
+      else if(err.code===2) msg="❌ Position unavailable";
+      else if(err.code===3) msg="❌ Timeout";
+      st.innerText=msg;st.style.color="#dc2626";
+    },
+    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
+}
+
+// ════ CITY SUGGESTIONS ════
+function citySuggest(inp,dropId){
+  const v=inp.value.trim().toLowerCase();
+  const drop=document.getElementById(dropId);
+  if(v.length<1){drop.classList.remove('open');return;}
+  const matches=SL_CITIES.filter(c=>c.toLowerCase().includes(v)).slice(0,8);
+  if(!matches.length){drop.classList.remove('open');return;}
+  drop.innerHTML=matches.map(c=>`<div class="city-opt" onmousedown="pickCity('${c}','${inp.id}','${dropId}')">${c}</div>`).join('');
+  drop.classList.add('open');
+}
+function pickCity(city,inpId,dropId){
+  document.getElementById(inpId).value=city;
+  closeDrop(dropId);
+}
+function closeDrop(id){document.getElementById(id).classList.remove('open');}
+
+// ════ CUSTOMER AUTOCOMPLETE ════
+let allCustomers=[];
+async function loadAllCustomers(){allCustomers=await db.customers.toArray();}
+
+async function custSearch(val){
+  const drop=document.getElementById('cust-dd');
+  if(val.length<1){drop.classList.remove('open');return;}
+  if(!allCustomers.length) await loadAllCustomers();
+  const v=val.toLowerCase();
+  const matches=allCustomers.filter(c=>c.name.toLowerCase().includes(v)||c.phone.includes(v)).slice(0,8);
+  if(!matches.length){drop.classList.remove('open');return;}
+  drop.innerHTML=matches.map(c=>`
+    <div class="cust-opt" onmousedown="pickCustomer(${c.id})">
+      <div class="co-icon">👤</div>
+      <div><div class="co-name">${c.name}</div><div class="co-phone">📞 ${c.phone} ${c.addr2?'• '+c.addr2:''}</div></div>
+    </div>`).join('');
+  drop.classList.add('open');
+}
+
+async function pickCustomer(id){
+  closeDrop('cust-dd');
+  const cust=allCustomers.find(c=>c.id===id)||(await db.customers.get(id));
+  if(!cust) return;
+  document.getElementById('svc-search').value=cust.name;
+  document.getElementById('svc-name').value=cust.name||'';
+  document.getElementById('svc-phone').value=cust.phone||'';
+  document.getElementById('svc-nic').value=cust.nic||'';
+  document.getElementById('svc-addr1').value=cust.addr1||cust.addr||'';
+  document.getElementById('svc-addr2').value=cust.addr2||'';
+  document.getElementById('svc-qrid').value=cust.qr_id||'';
+  const scales=cust.scales||[];
+  const sw=document.getElementById('svc-scale-sel-wrap');
+  const sel=document.getElementById('svc-scale-sel');
+  if(scales.length>1){
+    sel.innerHTML=scales.map((s,i)=>`<option value="${i}">${s.model||'Scale '+(i+1)} - ${s.serial||''}</option>`).join('');
+    sel.dataset.scales=JSON.stringify(scales);sw.style.display='block';fillScaleFields();
+  } else {
+    sw.style.display='none';
+    const s=scales[0]||{};
+    document.getElementById('svc-model').value=s.model||'';
+    document.getElementById('svc-serial').value=s.serial||'';
+    document.getElementById('svc-weight').value=s.weight?s.weight.replace(' kg',''):'';
+  }
+}
+
+function fillScaleFields(){
+  const sel=document.getElementById('svc-scale-sel');
+  const scales=JSON.parse(sel.dataset.scales||'[]');
+  const s=scales[parseInt(sel.value)]||{};
+  document.getElementById('svc-model').value=s.model||'';
+  document.getElementById('svc-serial').value=s.serial||'';
+  document.getElementById('svc-weight').value=s.weight?s.weight.replace(' kg',''):'';
+}
+
+function fmtW(inp){inp.value=inp.value.replace(/[^0-9.]/g,'');}
+
+function addScaleRow(){
+  document.getElementById('scales-list').insertAdjacentHTML('beforeend',`
+    <div class="sb">
+      <input type="text" class="fc s-model mb-2" placeholder="Model">
+      <div class="row g-2">
+        <div class="col-6"><input type="text" class="fc s-serial" placeholder="Serial No."></div>
+        <div class="col-6 ww"><input type="text" class="fc s-weight" placeholder="Weight" oninput="fmtW(this)"><span class="kb">kg</span></div>
+      </div>
+      <button style="border:none;background:none;color:#dc2626;font-weight:700;font-size:12px;margin-top:6px;cursor:pointer;" onclick="this.parentElement.remove()">✕ Remove</button>
+    </div>`);
+}
+
+// ════ SAVE CUSTOMER ════
+async function saveCustomer(){
+  const name=document.getElementById('rg-name').value;
+  const phone=document.getElementById('rg-phone').value;
+  if(!name||!phone) return Swal.fire('Error','Name and phone required','warning');
+  let scales=[];
+  document.querySelectorAll('#scales-list .sb').forEach(box=>{
+    const w=box.querySelector('.s-weight').value;
+    scales.push({model:box.querySelector('.s-model').value,serial:box.querySelector('.s-serial').value,weight:w?w+' kg':''});
+  });
+  const qrid="CUST-"+Date.now();
+  await db.customers.add({
+    qr_id:qrid,name,phone,
+    nic:document.getElementById('rg-nic').value,
+    addr1:document.getElementById('rg-addr1').value,
+    addr2:document.getElementById('rg-addr2').value,
+    gps,scales
+  });
+  allCustomers=[];
+  document.getElementById('qr-result-area').style.display='block';
+  document.getElementById('p-cust-name').innerText=name;
+  document.getElementById('p-qr-id').innerText=qrid;
+  document.getElementById('qrcode-box').innerHTML='';
+  new QRCode(document.getElementById('qrcode-box'),{text:qrid,width:190,height:190,correctLevel:QRCode.CorrectLevel.H});
+  setTimeout(overlayLogo,400);
+  Swal.fire('✅ Registered',name+' added!','success');
+  updateStats();
+  document.getElementById('qr-result-area').scrollIntoView({behavior:'smooth'});
+}
+
+function overlayLogo(){
+  const canvas=document.querySelector('#qrcode-box canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),img=new Image();
+  img.onload=function(){
+    const sz=canvas.width*.22,x=(canvas.width-sz)/2,y=(canvas.height-sz)/2;
+    ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,sz/2+6,0,Math.PI*2);
+    ctx.fillStyle='white';ctx.fill();
+    ctx.save();ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,sz/2+4,0,Math.PI*2);
+    ctx.clip();ctx.drawImage(img,x,y,sz,sz);ctx.restore();
+  };
+  img.src='data:image/jpeg;base64,'+LOGO_B64;
+}
+
+// ════ SCANNER ════
+async function startScanner(){
+  if(scanning)return;
+  const sb=document.getElementById('start-btn'),se=document.getElementById('scan-err'),ss=document.getElementById('ssb');
+  // Check HTTPS
+  if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){
+    se.innerText="⚠️ Camera needs HTTPS. Use GitHub Pages URL.";return;
+  }
+  try{
+    if(html5QrCode){try{await html5QrCode.stop();await html5QrCode.clear();}catch(e){}}
+    html5QrCode=new Html5Qrcode("reader");
+    sb.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i>Starting...';
+    ss.innerHTML='<i class="fas fa-spinner fa-spin me-2"></i>Initializing...';
+    const devs=await Html5Qrcode.getCameras();
+    if(devs&&devs.length){
+      const cam=devs.find(d=>d.label.toLowerCase().includes('back')||d.label.toLowerCase().includes('environment'))||devs[0];
+      await html5QrCode.start(cam.id,{fps:10,qrbox:210},async txt=>{await stopScanner();handleScan(txt);});
+      scanning=true;sb.style.display='none';
+      document.getElementById('stop-btn').style.display='block';
+      document.getElementById('scan-frame').style.display='block';
+      ss.innerHTML='<i class="fas fa-circle text-success me-2"></i>Scanning — aim at QR code';
+      se.innerText='';
+    }
+  }catch(err){
+    scanning=false;
+    let msg="Camera Error: "+err;
+    if(String(err).includes('Permission')||String(err).includes('NotAllowed')){
+      msg="📷 Camera permission denied. Browser settings > Camera > Allow.";
+    }
+    se.innerText=msg;
+    ss.innerHTML='<i class="fas fa-exclamation-triangle me-2" style="color:#dc2626;"></i>Camera failed';
+    sb.innerHTML='<i class="fas fa-play me-2"></i>START CAMERA';
+  }
+}
+async function stopScanner(){
+  if(html5QrCode&&scanning){try{await html5QrCode.stop();await html5QrCode.clear();}catch(e){}}
+  scanning=false;
+  const sb=document.getElementById('start-btn');
+  sb.style.display='block';sb.innerHTML='<i class="fas fa-play me-2"></i>START CAMERA';
+  document.getElementById('stop-btn').style.display='none';
+  document.getElementById('scan-frame').style.display='none';
+  document.getElementById('ssb').innerHTML='<i class="fas fa-camera me-2"></i>Camera stopped';
+}
+async function handleScan(qrid){
+  const cust=await db.customers.where('qr_id').equals(qrid).first();
+  if(!cust){Swal.fire('Error','Invalid QR Code','error').then(()=>startScanner());return;}
+  showChoiceModal(cust);
+}
+
+function showChoiceModal(cust){
+  Swal.fire({
+    title:`<strong style="color:#064C57;">${cust.name}</strong>`,
+    background:'#e0e5ec',
+    showConfirmButton:false,showCancelButton:true,cancelButtonText:'Cancel',
+    html:`<div style="font-size:12px;color:#64748b;margin-bottom:16px;">📞 ${cust.phone}${cust.addr2?' • '+cust.addr2:''}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <button onmousedown="Swal.close();openServicePage(${JSON.stringify(cust).replace(/"/g,'&quot;')})"
+              style="background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:14px;padding:18px 8px;font-weight:700;font-family:'Rajdhani',sans-serif;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(6,76,87,.35);">
+              🔧<br><span style="font-size:14px;">SERVICE</span>
+            </button>
+            <button onmousedown="Swal.close();openStampPage(${JSON.stringify(cust).replace(/"/g,'&quot;')})"
+              style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:14px;padding:18px 8px;font-weight:700;font-family:'Rajdhani',sans-serif;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,.35);">
+              📅<br><span style="font-size:14px;">STAMP</span>
+            </button>
+          </div>`
+  });
+}
+
+function openServicePage(cust){
+  document.getElementById('svc-search').value='';
+  document.getElementById('svc-name').value=cust.name||'';
+  document.getElementById('svc-phone').value=cust.phone||'';
+  document.getElementById('svc-nic').value=cust.nic||'';
+  document.getElementById('svc-addr1').value=cust.addr1||cust.addr||'';
+  document.getElementById('svc-addr2').value=cust.addr2||'';
+  document.getElementById('svc-qrid').value=cust.qr_id||'';
+  document.getElementById('svc-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('svc-amount').value='';
+  document.getElementById('svc-notes').value='';
+  const scales=cust.scales||[];
+  const sw=document.getElementById('svc-scale-sel-wrap'),sel=document.getElementById('svc-scale-sel');
+  if(scales.length>1){
+    sel.innerHTML=scales.map((s,i)=>`<option value="${i}">${s.model||'Scale '+(i+1)} - ${s.serial||''}</option>`).join('');
+    sel.dataset.scales=JSON.stringify(scales);sw.style.display='block';fillScaleFields();
+  } else {
+    sw.style.display='none';
+    const s=scales[0]||{};
+    document.getElementById('svc-model').value=s.model||'';
+    document.getElementById('svc-serial').value=s.serial||'';
+    document.getElementById('svc-weight').value=s.weight?s.weight.replace(' kg',''):'';
+  }
+  const inv='INV-'+Date.now().toString().slice(-8);
+  document.getElementById('svc-inv-no').innerText='#'+inv;
+  document.getElementById('svc-inv-no').dataset.inv=inv;
+  navTo('s-service');
+}
+
+function openStampPage(cust){
+  stampCust=cust;stampChecks={};
+  document.getElementById('stamp-cust-name').innerText=cust.name;
+  document.getElementById('stamp-cust-info').innerHTML=
+    `📞 ${cust.phone||'-'}${cust.nic?' &nbsp;|&nbsp; 🪪 '+cust.nic:''}${(cust.addr1||cust.addr2)?'<br>📍 '+(cust.addr1?cust.addr1+', ':'')+(cust.addr2||''):''}`;
+  const scales=cust.scales||[];
+  const list=document.getElementById('stamp-scales-list');
+  if(!scales.length){list.innerHTML='<div class="text-center text-muted py-3" style="font-size:13px;">No scales registered.</div>';stampChecks['all']=true;navTo('s-stamp');return;}
+  scales.forEach((_,i)=>{stampChecks[i]=true;});
+  list.innerHTML=scales.map((s,i)=>`
+    <div class="stamp-scale-item stamped" id="ssi-${i}" onclick="toggleStampCheck(${i})">
+      <div class="stamp-check checked" id="sc-${i}"><i class="fas fa-check" style="font-size:13px;"></i></div>
+      <div class="stamp-scale-info">
+        <div class="sm">${s.model||'Scale '+(i+1)}</div>
+        <div class="ss">Serial: ${s.serial||'-'} &nbsp;|&nbsp; ${s.weight||'-'}</div>
+      </div>
+    </div>`).join('');
+  navTo('s-stamp');
+}
+
+function toggleStampCheck(i){
+  stampChecks[i]=!stampChecks[i];
+  const item=document.getElementById('ssi-'+i),chk=document.getElementById('sc-'+i);
+  if(stampChecks[i]){item.className='stamp-scale-item stamped';chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';}
+  else{item.className='stamp-scale-item unstamped';chk.className='stamp-check';chk.innerHTML='';}
+}
+function stampSelectAll(v){
+  if(!stampCust)return;
+  (stampCust.scales||[]).forEach((_,i)=>{stampChecks[i]=v;toggleStampCheck(i);if(v){stampChecks[i]=true;const item=document.getElementById('ssi-'+i),chk=document.getElementById('sc-'+i);if(item){item.className='stamp-scale-item stamped';chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';}}});
+}
+async function saveStamp(){
+  if(!stampCust)return;
+  const scales=stampCust.scales||[];
+  let stampedScales=[],unstampedScales=[];
+  if(scales.length===0){stampedScales=['General Stamp'];}
+  else{scales.forEach((s,i)=>{const label=(s.model||'Scale '+(i+1))+(s.serial?' ('+s.serial+')':'');if(stampChecks[i])stampedScales.push(label);else unstampedScales.push(label);});}
+  await db.logs.add({cust_id:stampCust.qr_id,cust_name:stampCust.name,date:new Date().toISOString(),amount:0,type:'Stamp',notes:`Stamped: ${stampedScales.join(', ')}${unstampedScales.length?' | Not stamped: '+unstampedScales.join(', '):''}`,stamp_scales:JSON.stringify({stamped:stampedScales,unstamped:unstampedScales})});
+  Swal.fire('✅ Stamp Saved',`Stamped ${stampedScales.length} scale(s) for ${stampCust.name}`,'success');
+  navTo('s-home');updateStats();
+}
+
+// ════ INVOICE ════
+async function generateInvoice(){
+  const name=document.getElementById('svc-name').value;
+  if(!name)return Swal.fire('Error','Customer name required','warning');
+  const d={
+    inv_no:document.getElementById('svc-inv-no').dataset.inv,
+    cust_id:document.getElementById('svc-qrid').value,
+    cust_name:name,phone:document.getElementById('svc-phone').value,
+    nic:document.getElementById('svc-nic').value,
+    addr1:document.getElementById('svc-addr1').value,
+    addr2:document.getElementById('svc-addr2').value,
+    model:document.getElementById('svc-model').value,
+    serial:document.getElementById('svc-serial').value,
+    weight:document.getElementById('svc-weight').value?document.getElementById('svc-weight').value+' kg':'',
+    date:document.getElementById('svc-date').value,
+    amount:parseFloat(document.getElementById('svc-amount').value)||0,
+    notes:document.getElementById('svc-notes').value,
+    company:localStorage.getItem('tlpos_company')||'Ceylon Weighing Machine Limited',
+    cphone:localStorage.getItem('tlpos_cphone')||'',
+    adminEmail:localStorage.getItem('tlpos_email')||''
+  };
+  await db.invoices.add({inv_no:d.inv_no,cust_id:d.cust_id,cust_name:d.cust_name,date:d.date,amount:d.amount,model:d.model,serial:d.serial,weight:d.weight,notes:d.notes,phone:d.phone,nic:d.nic,addr1:d.addr1,addr2:d.addr2});
+  await db.logs.add({cust_id:d.cust_id,cust_name:d.cust_name,date:new Date().toISOString(),amount:d.amount,type:'Service',notes:'Invoice: '+d.inv_no});
+  curInv=d;
+  document.getElementById('inv-preview').innerHTML=buildInvHTML(d);
+  document.getElementById('inv-modal').classList.add('open');
+  updateStats();
+}
+
+function buildInvHTML(d){
+  const ds=d.date?new Date(d.date).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}):'';
+  const amt=parseFloat(d.amount||0).toLocaleString('en-LK',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
+  return `<div class="inv-wrap">
+  <div class="inv-hdr">
+    <div class="inv-logo-a"><img class="inv-logo" src="icons/icon-96.png" alt="Logo" onerror="this.style.display='none'"><div class="inv-co">${d.company||'Ceylon Weighing Machine Ltd'}<small>Service Dept.</small>${d.cphone?'<small>'+d.cphone+'</small>':''}</div></div>
+    <div class="inv-no"><div class="num">#${d.inv_no}</div><small>SERVICE INVOICE</small><small>${ds}</small></div>
+  </div>
+  <div class="ist">Customer Information</div>
+  <div class="ir"><span class="lbl">Name</span><span class="val">${d.cust_name||'-'}</span></div>
+  ${d.phone?'<div class="ir"><span class="lbl">Phone</span><span class="val">'+d.phone+'</span></div>':''}
+  ${d.nic?'<div class="ir"><span class="lbl">NIC</span><span class="val">'+d.nic+'</span></div>':''}
+  ${addr?'<div class="ir"><span class="lbl">Address</span><span class="val">'+addr+'</span></div>':''}
+  <div class="ist">⚖️ Scale Details</div>
+  ${d.model?'<div class="ir"><span class="lbl">Model</span><span class="val">'+d.model+'</span></div>':''}
+  ${d.serial?'<div class="ir"><span class="lbl">Serial No.</span><span class="val">'+d.serial+'</span></div>':''}
+  ${d.weight?'<div class="ir"><span class="lbl">Capacity</span><span class="val">'+d.weight+'</span></div>':''}
+  <div class="ir"><span class="lbl">Service Date</span><span class="val">${ds||'-'}</span></div>
+  ${d.notes?'<div class="ist">Service Notes</div><div style="font-size:13px;color:#374151;padding:10px;background:#f8fafc;border-radius:10px;line-height:1.6;">'+d.notes+'</div>':''}
+  <div class="iab"><div><div class="tl">TOTAL AMOUNT</div><div style="font-size:10px;opacity:.7;">All charges incl.</div></div><div class="tv">Rs ${amt}</div></div>
+  <div class="iftr">Thank you for choosing ${d.company||'Ceylon Weighing Machine Ltd'}<br>Invoice: ${d.inv_no} • TLpos Pro</div>
+  </div>`;
+}
+
+function closeInvModal(){document.getElementById('inv-modal').classList.remove('open');}
+
+function printInvoice(){
+  if(!curInv)return;
+  const html=buildInvHTML(curInv);
+  const w=window.open('','_blank','width=500,height=700');
+  if(w){
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Invoice #${curInv.inv_no}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{font-family:'Inter',sans-serif;background:#f0f4f8;min-height:100vh;padding:16px;}
+      .inv-wrap{font-family:'Inter',sans-serif;color:#111;padding:20px;max-width:480px;margin:auto;background:white;border-radius:16px;}
+      .inv-hdr{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+      .inv-logo-a{display:flex;align-items:center;gap:10px;}
+      .inv-logo{width:42px;height:42px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,255,255,.4);}
+      .inv-co{font-size:12px;font-weight:700;line-height:1.4;}
+      .inv-co small{font-size:10px;opacity:.75;display:block;}
+      .inv-no{text-align:right;flex-shrink:0;}
+      .inv-no .num{font-size:18px;font-weight:700;color:#F59E0B;}
+      .inv-no small{font-size:10px;opacity:.8;display:block;}
+      .ist{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;margin-top:12px;}
+      .ir{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:13px;}
+      .ir:last-child{border-bottom:none;}
+      .ir .lbl{color:#64748b;font-size:12px;}.ir .val{font-weight:600;color:#111;}
+      .iab{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+      .iab .tl{font-size:11px;opacity:.85;letter-spacing:1px;}.iab .tv{font-size:24px;font-weight:700;color:#F59E0B;}
+      .iftr{text-align:center;margin-top:12px;font-size:10px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;}
+      .print-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:1px;}
+      @media print{.print-btn{display:none!important;}}
+    
+</style></head><body>
+    ${html}
+    <button class="print-btn" onclick="window.print()">🖨️ PRINT</button>
+    </body></html>`);
+    w.document.close();
+  } else {
+    const pa=document.getElementById('inv-print-area');
+    pa.innerHTML=html;pa.style.display='block';
+    window.print();
+    setTimeout(()=>pa.style.display='none',1500);
+  }
+  if(curInv.adminEmail) setTimeout(()=>sendEmail(curInv),600);
+}
+
+function dlInvExcel(){
+  if(!curInv)return;
+  const d=curInv;
+  const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
+  const rows=[{'Invoice No':d.inv_no,'Date':d.date,'Customer Name':d.cust_name,'Phone':d.phone,'NIC':d.nic,'Address Line 1':d.addr1,'Nearest City':d.addr2,'Address Full':addr,'Scale Model':d.model,'Serial No':d.serial,'Weight':d.weight,'Service Notes':d.notes,'Amount (Rs)':d.amount}];
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:14},{wch:20},{wch:16},{wch:24},{wch:16},{wch:14},{wch:10},{wch:30},{wch:12}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Invoice');
+  xlsxDownload(wb,`TLpos_Invoice_${d.inv_no}.xlsx`);
+  if(d.adminEmail) setTimeout(()=>sendEmail(d),400);
+}
+
+function sendEmail(d){
+  const subject=encodeURIComponent(`Service Invoice #${d.inv_no} - ${d.cust_name}`);
+  const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
+  const amt=parseFloat(d.amount||0).toLocaleString('en-LK',{minimumFractionDigits:2});
+  const body=encodeURIComponent(`SERVICE INVOICE - TLpos Pro\n══════════════════════════\nInvoice No  : ${d.inv_no}\nDate        : ${d.date}\nCustomer    : ${d.cust_name}\nPhone       : ${d.phone||'-'}\nNIC         : ${d.nic||'-'}\nAddress     : ${addr||'-'}\n──────────────────────────\nScale Model : ${d.model||'-'}\nSerial No   : ${d.serial||'-'}\nWeight      : ${d.weight||'-'}\n──────────────────────────\nNotes       : ${d.notes||'-'}\n══════════════════════════\nTOTAL       : Rs ${amt}\n══════════════════════════\nGenerated by TLpos Pro`);
+  window.open(`mailto:${d.adminEmail}?subject=${subject}&body=${body}`,'_blank');
+}
+
+// ════ DAILY SUMMARY ════
+async function generateDailySummary(){
+  const today=new Date().toLocaleDateString('en-CA');
+  const allLogs=await db.logs.toArray();
+  const allInv=await db.invoices.toArray();
+  const todayLogs=allLogs.filter(l=>l.date.startsWith(today));
+  const todayInv=allInv.filter(i=>i.date===today);
+  const stamps=todayLogs.filter(l=>l.type==='Stamp');
+  if(!todayLogs.length)return Swal.fire('No Data',`No records for today (${today})`,'info');
+  const wb=XLSX.utils.book_new();
+  const dateStr=new Date().toLocaleDateString('en-GB');
+  if(todayInv.length){
+    const svcRows=todayInv.map(i=>({'Invoice No':i.inv_no,'Service Date':i.date,'Customer Name':i.cust_name,'Phone':i.phone||'-','NIC':i.nic||'-','Address Line 1':i.addr1||'-','Nearest City':i.addr2||'-','Scale Model':i.model||'-','Serial No':i.serial||'-','Weight':i.weight||'-','Service Notes':i.notes||'-','Amount (Rs)':i.amount||0}));
+    const ws=XLSX.utils.json_to_sheet(svcRows);ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:14},{wch:22},{wch:16},{wch:16},{wch:14},{wch:12},{wch:30},{wch:12}];
+    XLSX.utils.book_append_sheet(wb,ws,'Services');
+  }
+  if(stamps.length){
+    const stampRows=[];
+    for(const s of stamps){
+      const cust=await db.customers.where('qr_id').equals(s.cust_id||'').first();
+      let stampedList='-',unstampedList='-';
+      if(s.stamp_scales){try{const ss=JSON.parse(s.stamp_scales);stampedList=ss.stamped.join(', ')||'-';unstampedList=ss.unstamped.join(', ')||'-';}catch(e){}}
+      stampRows.push({'Stamp Date':new Date(s.date).toLocaleDateString('en-CA'),'Time':new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),'Customer Name':s.cust_name,'Phone':cust?cust.phone:'-','Address Line 1':cust?(cust.addr1||cust.addr||'-'):'-','Nearest City':cust?(cust.addr2||'-'):'-','Scales Stamped':stampedList,'Scales NOT Stamped':unstampedList,'Notes':s.notes||'-'});
+    }
+    const ws=XLSX.utils.json_to_sheet(stampRows);ws['!cols']=[{wch:12},{wch:8},{wch:20},{wch:14},{wch:22},{wch:16},{wch:30},{wch:24},{wch:30}];
+    XLSX.utils.book_append_sheet(wb,ws,'Stamps');
+  }
+  const totRev=todayInv.reduce((a,b)=>a+(b.amount||0),0);
+  const sumRows=[{'Metric':'Date','Value':dateStr},{'Metric':'Total Services','Value':todayInv.length},{'Metric':'Total Stamps','Value':stamps.length},{'Metric':'Total Activities','Value':todayLogs.length},{'Metric':'Total Revenue (Rs)','Value':totRev.toLocaleString('en-LK',{minimumFractionDigits:2})},{'Metric':'Generated At','Value':new Date().toLocaleTimeString()}];
+  const ws3=XLSX.utils.json_to_sheet(sumRows);ws3['!cols']=[{wch:22},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws3,'Summary');
+  const fname=`TLpos_DailySummary_${today}.xlsx`;
+  xlsxDownload(wb,fname);
+  const adminEmail=localStorage.getItem('tlpos_email')||'';
+  if(adminEmail){
+    const subject=encodeURIComponent(`Daily Summary ${dateStr} — TLpos Pro`);
+    const body=encodeURIComponent(`DAILY SUMMARY REPORT\nDate: ${dateStr}\n══════════════════\nTotal Services  : ${todayInv.length}\nTotal Stamps    : ${stamps.length}\nTotal Revenue   : Rs ${totRev.toLocaleString('en-LK',{minimumFractionDigits:2})}\n══════════════════\nGenerated by TLpos Pro`);
+    window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`,'_blank');
+  }
+  Swal.fire('✅ Daily Summary',`Report saved: ${fname}${adminEmail?'\n📧 Email opened!':''}`, 'success');
+}
+
+// ════ DIRECTORY ════
+async function loadDir(){
+  await loadAllCustomers();
+  const el=document.getElementById('cust-dir');
+  if(!allCustomers.length){el.innerHTML='<div class="text-center text-muted py-4">No customers yet.</div>';return;}
+  el.innerHTML=allCustomers.map(c=>`
+    <div class="ci" onclick='openServicePage(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <div><div class="fw-bold" style="color:var(--p);">${c.name}</div>
+      <small class="text-muted">📞 ${c.phone} ${c.addr2?'• '+c.addr2:''}</small></div>
+      <i class="fas fa-chevron-right text-muted"></i>
+    </div>`).join('');
+}
+function filterDir(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  document.querySelectorAll('.ci').forEach(i=>{i.style.display=i.innerText.toLowerCase().includes(q)?'flex':'none';});
+}
+
+// ════ STATS ════
+async function updateStats(){
+  const td=new Date().toLocaleDateString();
+  const cCount=await db.customers.count();
+  const logs=await db.logs.toArray();
+  const tLogs=logs.filter(l=>new Date(l.date).toLocaleDateString()===td);
+  const svc=tLogs.filter(l=>l.type==='Service');
+  const rev=svc.reduce((a,b)=>a+b.amount,0);
+  document.getElementById('st-cust').innerText=cCount;
+  document.getElementById('st-calls').innerText=svc.length;
+  document.getElementById('st-stamp').innerText=tLogs.length-svc.length;
+  document.getElementById('st-rev').innerText=rev.toLocaleString();
+}
+
+// ════ EXPORT ════
+async function exportData(type){
+  const from=document.getElementById('rpt-from').value,to=document.getElementById('rpt-to').value;
+  let data;
+  if(type==='customers') data=await db.customers.toArray();
+  else if(type==='invoices') data=await db.invoices.toArray();
+  else data=await db.logs.toArray();
+  if(from&&type!=='customers') data=data.filter(l=>(l.date||'')>=from);
+  if(to&&type!=='customers') data=data.filter(l=>(l.date||'')<=to+'T23:59');
+  if(!data.length)return Swal.fire('No Data','No records found.','info');
+  const ws=XLSX.utils.json_to_sheet(data);
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Records');
+  xlsxDownload(wb,`TLpos_${type}_Report.xlsx`);
+}
+async function exportDatabase(){
+  const c=await db.customers.toArray(),l=await db.logs.toArray(),i=await db.invoices.toArray();
+  const jsonStr=JSON.stringify({customers:c,logs:l,invoices:i});
+  const dataUri='data:application/json;charset=utf-8,'+encodeURIComponent(jsonStr);
+  const a=document.createElement('a');a.href=dataUri;a.download=`TLpos_Backup_${Date.now()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+async function importDatabase(){
+  const {value:file}=await Swal.fire({title:'Select Backup',input:'file',inputAttributes:{accept:'.json'}});
+  if(file){
+    const r=new FileReader();
+    r.onload=async e=>{
+      const d=JSON.parse(e.target.result);
+      await db.customers.clear();await db.logs.clear();
+      if(db.invoices)await db.invoices.clear();
+      await db.customers.bulkAdd(d.customers);await db.logs.bulkAdd(d.logs);
+      if(d.invoices)await db.invoices.bulkAdd(d.invoices);
+      Swal.fire('✅ Restored','Database restored.','success');updateStats();allCustomers=[];
+    };
+    r.readAsText(file);
+  }
+}
+
+// ════ ADMIN ════
+function openAdmin(){
+  navTo('s-admin');
+  document.getElementById('adm-lock').style.display='block';
+  document.getElementById('adm-content').style.display='none';
+  document.getElementById('adm-pw').value='';
+}
+function checkAdmPw(){
+  if(document.getElementById('adm-pw').value===ADM_PW){
+    document.getElementById('adm-lock').style.display='none';
+    document.getElementById('adm-content').style.display='block';
+    loadAdmSettings();
+  } else {Swal.fire('Error','Wrong password','error');document.getElementById('adm-pw').value='';}
+}
+function loadAdmSettings(){
+  document.getElementById('adm-email').value=localStorage.getItem('tlpos_email')||'';
+  document.getElementById('adm-company').value=localStorage.getItem('tlpos_company')||'';
+  document.getElementById('adm-cphone').value=localStorage.getItem('tlpos_cphone')||'';
+}
+function saveAdmSettings(){
+  localStorage.setItem('tlpos_email',document.getElementById('adm-email').value);
+  localStorage.setItem('tlpos_company',document.getElementById('adm-company').value||'Ceylon Weighing Machine Limited');
+  localStorage.setItem('tlpos_cphone',document.getElementById('adm-cphone').value);
+  Swal.fire('✅ Saved','Settings saved','success');
+}
+function lockAdm(){document.getElementById('adm-lock').style.display='block';document.getElementById('adm-content').style.display='none';navTo('s-home');}
+
+// ════ KEYPAD ════
+function openKp(tid){kpTgt=tid;kpVal=document.getElementById(tid).value||'';document.getElementById('kp-disp').innerText=kpVal||'_';document.getElementById('kp-overlay').classList.add('open');}
+function closeKpBg(e){if(e.target===document.getElementById('kp-overlay'))closeKp();}
+function closeKp(){document.getElementById('kp-overlay').classList.remove('open');}
+function kpP(v){if(kpVal.length>=15)return;kpVal+=v;document.getElementById('kp-disp').innerText=kpVal;}
+function kpDel(){kpVal=kpVal.slice(0,-1);document.getElementById('kp-disp').innerText=kpVal||'_';}
+function kpClr(){kpVal='';document.getElementById('kp-disp').innerText='_';}
+function kpDone(){if(kpTgt)document.getElementById(kpTgt).value=kpVal;closeKp();}
+
+// ════ EXCEL DOWNLOAD ════
+function xlsxDownload(wb,filename){
+  try{
+    const wbout=XLSX.write(wb,{bookType:'xlsx',type:'base64'});
+    const dataUri='data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'+wbout;
+    const a=document.createElement('a');a.href=dataUri;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),300);
+  }catch(e){
+    const wbout=XLSX.write(wb,{bookType:'csv',type:'string'});
+    const dataUri='data:text/csv;charset=utf-8,'+encodeURIComponent(wbout);
+    const a=document.createElement('a');a.href=dataUri;a.download=filename.replace('.xlsx','.csv');document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),300);
+  }
+}
+
+// ════ QR PRINT ════
+function printQR(){
+  const content=document.getElementById('print-area').innerHTML;
+  const w=window.open('','_blank','width=400,height=500');
+  if(w){
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <style>body{font-family:sans-serif;text-align:center;padding:20px;background:white;}
+      img{max-width:100%;}.qr-brand-header{background:#8B0000;color:white;padding:12px;border-radius:10px;margin-bottom:12px;font-weight:700;font-size:14px;}
+      
+</style></head><body>${content}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+    w.document.close();
+  } else {
+    const pa=document.getElementById('inv-print-area');
+    pa.innerHTML='<div style="background:white;padding:20px;text-align:center;">'+content+'</div>';
+    pa.style.display='block';window.print();setTimeout(()=>pa.style.display='none',1500);
+  }
+}
+
+// ════ PWA — SERVICE WORKER ════
+let swReg=null, deferredPrompt=null;
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async ()=>{
+    try{
+      swReg = await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+      console.log('[PWA] SW registered:', swReg.scope);
+
+      // Check for updates every 60s
+      setInterval(()=>swReg.update(), 60000);
+
+      // New SW available — show update toast
+      swReg.addEventListener('updatefound',()=>{
+        const newSW = swReg.installing;
+        newSW.addEventListener('statechange',()=>{
+          if(newSW.state==='installed'&&navigator.serviceWorker.controller){
+            document.getElementById('update-toast').classList.add('show');
+          }
+        });
+      });
+    }catch(err){
+      console.warn('[PWA] SW registration failed:',err);
+    }
+  });
+
+  // When new SW takes over, reload
+  let refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!refreshing){refreshing=true;window.location.reload();}
+  });
+}
+
+// ── Install prompt ──
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  // Show banner after 3s
+  setTimeout(()=>{
+    if(!localStorage.getItem('pwa_installed')&&!localStorage.getItem('pwa_dismissed')){
+      document.getElementById('pwa-banner').classList.add('show');
+    }
+  }, 3000);
+});
+
+window.addEventListener('appinstalled',()=>{
+  localStorage.setItem('pwa_installed','1');
+  document.getElementById('pwa-banner').classList.remove('show');
+  Swal.fire({title:'✅ App Installed!',text:'TLpos Pro home screen eke add වුණා!',icon:'success',timer:2500,showConfirmButton:false});
+});
+
+async function installPWA(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  if(outcome==='accepted') localStorage.setItem('pwa_installed','1');
+  deferredPrompt=null;
+  document.getElementById('pwa-banner').classList.remove('show');
+}
+
+function dismissBanner(){
+  localStorage.setItem('pwa_dismissed','1');
+  document.getElementById('pwa-banner').classList.remove('show');
+}
+
+function reloadForUpdate(){
+  document.getElementById('update-toast').classList.remove('show');
+  if(swReg&&swReg.waiting) swReg.waiting.postMessage({type:'SKIP_WAITING'});
+  else window.location.reload();
+}
+
+// ── Online / Offline detection ──
+function updateOnlineStatus(){
+  const badge=document.getElementById('offline-badge');
+  if(navigator.onLine) badge.classList.remove('show');
+  else badge.classList.add('show');
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+window.onload=()=>{
+  updateStats();
+  loadAllCustomers();
+  updateOnlineStatus();
+};
+</script>
+</body>
+</html>

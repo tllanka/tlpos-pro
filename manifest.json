@@ -1,0 +1,22 @@
+{
+  "name": "TLpos Pro — Scale Service Manager",
+  "short_name": "TLpos Pro",
+  "description": "Ceylon Weighing Machine Service Management System",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#064C57",
+  "theme_color": "#064C57",
+  "lang": "si",
+  "scope": "./",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "categories": ["business", "utilities"],
+  "shortcuts": [
+    { "name": "QR Scanner", "short_name": "Scan", "url": "./index.html#scan", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Register Customer", "short_name": "Register", "url": "./index.html#reg", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
