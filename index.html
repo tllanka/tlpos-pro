@@ -211,6 +211,17 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
 .qrbh{background:linear-gradient(135deg,#8B0000,#B22222);border-radius:10px 10px 0 0;padding:10px;margin:-22px -22px 14px -22px;color:white;font-weight:700;font-size:12px;letter-spacing:1px;}
 .qrcw{display:inline-block;padding:6px;background:white;border:2px solid #e5e7eb;border-radius:10px;}
 
+
+/* Install card on home page */
+#install-card{border-radius:20px;background:linear-gradient(135deg,#064C57 0%,#0a6b7a 60%,#0d8a9e 100%);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;box-shadow:6px 6px 14px var(--sd),-4px -4px 10px var(--sl);position:relative;overflow:hidden;transition:opacity .3s;}
+#install-card::before{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.08);}
+#install-card .ic-icon{font-size:34px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+#install-card .ic-text{flex:1;}
+#install-card .ic-text strong{display:block;color:white;font-size:15px;font-weight:700;font-family:"Rajdhani",sans-serif;letter-spacing:.5px;}
+#install-card .ic-text small{display:block;color:rgba(255,255,255,.75);font-size:10px;margin-top:2px;}
+#install-card .ic-btn{background:#F59E0B;color:#064C57;border:none;border-radius:12px;padding:10px 18px;font-weight:800;font-size:14px;font-family:"Rajdhani",sans-serif;letter-spacing:.5px;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(245,158,11,.4);transition:transform .15s;}
+#install-card .ic-btn:active{transform:scale(.94);}
+#install-card .ic-ios{color:rgba(255,255,255,.85);font-size:11px;margin-top:6px;line-height:1.5;}
 @media print{
   body>*:not(#inv-print-area){display:none!important;}
   #inv-print-area{display:block!important;position:fixed;inset:0;background:white;z-index:99999;padding:16px;}
@@ -258,6 +269,22 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
     <div class="col-6"><div class="sc sc3"><span class="si">💰</span><span class="stat-value" id="st-rev">0</span><span class="stat-label">Revenue (Rs)</span></div></div>
     <div class="col-6"><div class="sc sc4"><span class="si">🕐</span><span class="stat-value" id="st-stamp">0</span><span class="stat-label">Today Stamps</span></div></div>
   </div>
+
+  <!-- ── PWA Install Card ── shown only when not installed ── -->
+  <div id="install-card" style="display:none;">
+    <div class="ic-icon">📲</div>
+    <div class="ic-text">
+      <strong>INSTALL APP</strong>
+      <small>Home screen eke add කරන්න · Offline wedi use</small>
+      <div class="ic-ios" id="ios-hint" style="display:none;">
+        Safari → <b>Share ⬆</b> → <b>"Add to Home Screen"</b>
+      </div>
+    </div>
+    <button class="ic-btn" id="install-btn" onclick="installPWA()">
+      <i class="fas fa-download me-1"></i>Install
+    </button>
+  </div>
+
   <div class="d-grid gap-3 mb-3">
     <button class="reb py-4" onclick="navTo('s-scan');setTimeout(startScanner,350);"><i class="fas fa-qrcode me-2"></i>QR SCANNER</button>
     <div class="row g-3">
@@ -532,7 +559,7 @@ let stampCust=null, stampChecks={};
 
 // ════ NAV ════
 const NM={'s-home':'n-home','s-scan':'n-scan','s-reg':'n-reg','s-list':'n-list','s-reports':'n-rpt'};
-function navTo(id){
+function navTo(id){ if(id==='s-home') setTimeout(checkInstallCard,100);
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -912,7 +939,9 @@ function printInvoice(){
       .iab .tl{font-size:11px;opacity:.85;letter-spacing:1px;}.iab .tv{font-size:24px;font-weight:700;color:#F59E0B;}
       .iftr{text-align:center;margin-top:12px;font-size:10px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;}
       .print-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:1px;}
-      @media print{.print-btn{display:none!important;}}
+      
+/* Install card on home page */
+@media print{.print-btn{display:none!important;}}
     
 </style></head><body>
     ${html}
@@ -1124,91 +1153,129 @@ function printQR(){
   }
 }
 
-// ════ PWA — SERVICE WORKER ════
-let swReg=null, deferredPrompt=null;
+// ════ PWA — SERVICE WORKER & INSTALL ════
+let swReg = null, deferredPrompt = null;
 
-if('serviceWorker' in navigator){
-  window.addEventListener('load', async ()=>{
-    try{
-      swReg = await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+// ── Is already installed (standalone)? ──
+const isStandalone = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true ||
+  document.referrer.includes('android-app://');
+
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+// ── Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      swReg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
       console.log('[PWA] SW registered:', swReg.scope);
-
-      // Check for updates every 60s
-      setInterval(()=>swReg.update(), 60000);
-
-      // New SW available — show update toast
-      swReg.addEventListener('updatefound',()=>{
+      setInterval(() => swReg.update(), 60000);
+      swReg.addEventListener('updatefound', () => {
         const newSW = swReg.installing;
-        newSW.addEventListener('statechange',()=>{
-          if(newSW.state==='installed'&&navigator.serviceWorker.controller){
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
             document.getElementById('update-toast').classList.add('show');
           }
         });
       });
-    }catch(err){
-      console.warn('[PWA] SW registration failed:',err);
+    } catch (err) {
+      console.warn('[PWA] SW failed:', err);
     }
   });
-
-  // When new SW takes over, reload
-  let refreshing=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(!refreshing){refreshing=true;window.location.reload();}
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) { refreshing = true; window.location.reload(); }
   });
 }
 
-// ── Install prompt ──
-window.addEventListener('beforeinstallprompt', e=>{
+// ── Show/hide install card on home page ──
+function checkInstallCard() {
+  const card = document.getElementById('install-card');
+  if (!card) return;
+  if (isStandalone()) {
+    // Already installed — never show
+    card.style.display = 'none';
+    return;
+  }
+  if (isIOS()) {
+    // iOS: show manual hint (no prompt API)
+    card.style.display = 'flex';
+    document.getElementById('ios-hint').style.display = 'block';
+    document.getElementById('install-btn').style.display = 'none';
+  } else if (deferredPrompt) {
+    // Android/Desktop: prompt ready
+    card.style.display = 'flex';
+    document.getElementById('ios-hint').style.display = 'none';
+    document.getElementById('install-btn').style.display = 'inline-block';
+  } else {
+    // Prompt not yet fired — hide for now
+    card.style.display = 'none';
+  }
+}
+
+// ── beforeinstallprompt — capture & show card ──
+window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
-  deferredPrompt=e;
-  // Show banner after 3s
-  setTimeout(()=>{
-    if(!localStorage.getItem('pwa_installed')&&!localStorage.getItem('pwa_dismissed')){
-      document.getElementById('pwa-banner').classList.add('show');
-    }
-  }, 3000);
-});
-
-window.addEventListener('appinstalled',()=>{
-  localStorage.setItem('pwa_installed','1');
+  deferredPrompt = e;
+  checkInstallCard();
+  // Also remove old floating banner
   document.getElementById('pwa-banner').classList.remove('show');
-  Swal.fire({title:'✅ App Installed!',text:'TLpos Pro home screen eke add වුණා!',icon:'success',timer:2500,showConfirmButton:false});
 });
 
-async function installPWA(){
-  if(!deferredPrompt)return;
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-card').style.display = 'none';
+  document.getElementById('pwa-banner').classList.remove('show');
+  deferredPrompt = null;
+  Swal.fire({ title: '✅ App Installed!', text: 'TLpos Pro home screen eke add වුණා!', icon: 'success', timer: 2500, showConfirmButton: false });
+});
+
+async function installPWA() {
+  if (!deferredPrompt) return;
   deferredPrompt.prompt();
-  const {outcome}=await deferredPrompt.userChoice;
-  if(outcome==='accepted') localStorage.setItem('pwa_installed','1');
-  deferredPrompt=null;
-  document.getElementById('pwa-banner').classList.remove('show');
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('install-card').style.display = 'none';
+    localStorage.setItem('pwa_installed', '1');
+  }
+  deferredPrompt = null;
 }
 
-function dismissBanner(){
-  localStorage.setItem('pwa_dismissed','1');
+// Legacy banner (keep for compat but hide)
+function dismissBanner() {
   document.getElementById('pwa-banner').classList.remove('show');
+  localStorage.setItem('pwa_dismissed', '1');
 }
 
-function reloadForUpdate(){
+function reloadForUpdate() {
   document.getElementById('update-toast').classList.remove('show');
-  if(swReg&&swReg.waiting) swReg.waiting.postMessage({type:'SKIP_WAITING'});
+  if (swReg && swReg.waiting) swReg.waiting.postMessage({ type: 'SKIP_WAITING' });
   else window.location.reload();
 }
 
-// ── Online / Offline detection ──
-function updateOnlineStatus(){
-  const badge=document.getElementById('offline-badge');
-  if(navigator.onLine) badge.classList.remove('show');
-  else badge.classList.add('show');
+// ── Online / Offline ──
+function updateOnlineStatus() {
+  const badge = document.getElementById('offline-badge');
+  if (badge) {
+    if (navigator.onLine) badge.classList.remove('show');
+    else badge.classList.add('show');
+  }
 }
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-window.onload=()=>{
-  updateStats();
-  loadAllCustomers();
-  updateOnlineStatus();
-};
+// ── Hash routing ──
+window.addEventListener('DOMContentLoaded', () => {
+  checkInstallCard();
+  const hash = location.hash;
+  if (hash === '#scan') { navTo('s-scan'); setTimeout(startScanner, 600); }
+  else if (hash === '#reg') navTo('s-reg');
+});
+
+// Also re-check when navigating to home
+const _origNavTo = navTo;
+// patch: checkInstallCard when home is shown
+const _checkOnHome = (id) => { if (id === 's-home') checkInstallCard(); };
 </script>
 </body>
 </html>
