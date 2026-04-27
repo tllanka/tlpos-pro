@@ -4,27 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>TLpos Pro</title>
-
-<!-- ══ PWA META ══ -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#064C57">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TLpos Pro">
-<meta name="application-name" content="TLpos Pro">
-<meta name="msapplication-TileColor" content="#064C57">
-<meta name="description" content="Ceylon Weighing Machine — Scale Service Manager">
-
-<!-- Apple icons -->
-<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-
-<!-- Splash screens iOS -->
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -38,24 +17,6 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:#333;padding-bottom:120px;margin:0;}
 h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
-
-/* ── PWA Install Banner ── */
-#pwa-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;padding:12px 16px;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,.3);}
-#pwa-banner.show{display:flex;}
-#pwa-banner img{width:38px;height:38px;border-radius:8px;}
-#pwa-banner .pb-text{flex:1;font-size:13px;font-weight:600;}
-#pwa-banner .pb-text small{display:block;font-size:10px;opacity:.8;font-weight:400;}
-#pwa-banner button{background:white;color:#064C57;border:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;}
-#pwa-banner .pb-dismiss{background:transparent;color:rgba(255,255,255,.7);border:none;font-size:18px;padding:4px 8px;cursor:pointer;}
-
-/* ── Offline badge ── */
-#offline-badge{display:none;position:fixed;top:14px;right:14px;z-index:8000;background:#dc2626;color:white;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(220,38,38,.4);}
-#offline-badge.show{display:block;}
-
-/* ── Update toast ── */
-#update-toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:7000;background:#064C57;color:white;border-radius:14px;padding:12px 20px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);white-space:nowrap;gap:10px;align-items:center;}
-#update-toast.show{display:flex;}
-#update-toast button{background:#F59E0B;color:#064C57;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;}
 
 /* Header */
 .app-header{background:linear-gradient(135deg,#064C57 0%,#0a6b7a 50%,#0d8a9e 100%);color:white;padding:16px 20px;border-radius:0 0 30px 30px;box-shadow:0 8px 28px rgba(6,76,87,.45);margin-bottom:18px;position:relative;overflow:hidden;}
@@ -211,42 +172,93 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
 .qrbh{background:linear-gradient(135deg,#8B0000,#B22222);border-radius:10px 10px 0 0;padding:10px;margin:-22px -22px 14px -22px;color:white;font-weight:700;font-size:12px;letter-spacing:1px;}
 .qrcw{display:inline-block;padding:6px;background:white;border:2px solid #e5e7eb;border-radius:10px;}
 
-
-/* Install card on home page */
-#install-card{border-radius:20px;background:linear-gradient(135deg,#064C57 0%,#0a6b7a 60%,#0d8a9e 100%);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;box-shadow:6px 6px 14px var(--sd),-4px -4px 10px var(--sl);position:relative;overflow:hidden;transition:opacity .3s;}
-#install-card::before{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.08);}
-#install-card .ic-icon{font-size:34px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
-#install-card .ic-text{flex:1;}
-#install-card .ic-text strong{display:block;color:white;font-size:15px;font-weight:700;font-family:"Rajdhani",sans-serif;letter-spacing:.5px;}
-#install-card .ic-text small{display:block;color:rgba(255,255,255,.75);font-size:10px;margin-top:2px;}
-#install-card .ic-btn{background:#F59E0B;color:#064C57;border:none;border-radius:12px;padding:10px 18px;font-weight:800;font-size:14px;font-family:"Rajdhani",sans-serif;letter-spacing:.5px;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(245,158,11,.4);transition:transform .15s;}
-#install-card .ic-btn:active{transform:scale(.94);}
-#install-card .ic-ios{color:rgba(255,255,255,.85);font-size:11px;margin-top:6px;line-height:1.5;}
 @media print{
   body>*:not(#inv-print-area){display:none!important;}
   #inv-print-area{display:block!important;position:fixed;inset:0;background:white;z-index:99999;padding:16px;}
 }
+</style>
 
+<style>
+/* ── Copy Protection ── */
+* { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; }
+</style>
+
+<style>
+/* Allow input fields to work normally */
+input, textarea, select { -webkit-user-select: text !important; -moz-user-select: text !important; user-select: text !important; }
+</style>
+
+<!-- PWA SETTINGS -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* PWA Install Button */
+.install-banner{display:none;position:fixed;left:14px;right:14px;bottom:92px;z-index:5000;background:linear-gradient(135deg,#064C57,#0a6b7a);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);align-items:center;gap:10px;}
+.install-banner.show{display:flex;}
+.install-banner .ib-text{flex:1;font-size:12px;line-height:1.35;font-weight:700;}
+.install-banner .ib-text small{display:block;font-size:10px;opacity:.82;font-weight:500;margin-top:2px;}
+.install-banner button{border:none;border-radius:12px;padding:10px 12px;font-weight:800;font-size:12px;cursor:pointer;}
+.install-banner .install-now{background:#F59E0B;color:#111;}
+.install-banner .install-close{background:rgba(255,255,255,.18);color:white;}
+@media (display-mode: standalone){.install-banner{display:none!important;}}
 </style>
 </head>
 <body>
+<script>
+// ══ CODE PROTECTION ══
+(function(){
+  // Disable right-click
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); return false; });
 
-<!-- PWA Install Banner -->
-<div id="pwa-banner">
-  <img src="icons/icon-96.png" alt="TLpos">
-  <div class="pb-text">Install TLpos Pro App<small>Home screen eke add karanna</small></div>
-  <button onclick="installPWA()">Install</button>
-  <button class="pb-dismiss" onclick="dismissBanner()">✕</button>
-</div>
+  // Disable keyboard shortcuts
+  document.addEventListener('keydown', function(e){
+    // Ctrl+U (view source), Ctrl+S (save), Ctrl+A (select all)
+    // Ctrl+C (copy), Ctrl+Shift+I (devtools), F12
+    if(
+      (e.ctrlKey && (e.key==='u'||e.key==='U')) ||
+      (e.ctrlKey && (e.key==='s'||e.key==='S')) ||
+      (e.ctrlKey && (e.key==='a'||e.key==='A')) ||
+      (e.ctrlKey && (e.key==='c'||e.key==='C')) ||
+      (e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'||e.key==='C'||e.key==='c')) ||
+      e.key==='F12'
+    ){
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }, true);
 
-<!-- Offline badge -->
-<div id="offline-badge">📵 Offline</div>
+  // Disable text selection via mouse
+  document.addEventListener('selectstart', function(e){ e.preventDefault(); return false; });
 
-<!-- Update toast -->
-<div id="update-toast">
-  🔄 New update ready!
-  <button onclick="reloadForUpdate()">Update Now</button>
-</div>
+  // Disable drag
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); return false; });
+
+  // Disable touch copy on mobile
+  document.addEventListener('copy', function(e){ e.preventDefault(); return false; });
+  document.addEventListener('cut',  function(e){ e.preventDefault(); return false; });
+
+  // DevTools detection - basic
+  setInterval(function(){
+    const t = new Date();
+    debugger;
+    if(new Date()-t > 100){
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;font-family:sans-serif;background:#064C57;color:white;"><h2>🔒 Access Denied</h2><p style="margin-top:8px;opacity:.75;">Developer tools are not allowed.</p></div>';
+    }
+  }, 3000);
+
+  // Disable view-source: redirect attempts
+  if(window.location.protocol === 'view-source:'){
+    window.location = 'about:blank';
+  }
+})();
+</script>
+
 
 <div class="app-header d-flex justify-content-between align-items-center">
   <div style="position:relative;z-index:1;">
@@ -259,6 +271,14 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
   </div>
 </div>
 
+
+<!-- PWA Install Banner: shows only when app is installable and not installed -->
+<div id="pwa-install-banner" class="install-banner">
+  <div class="ib-text">📲 Install TLpos Pro<small>Offline වැඩ කරන්න Android phone එකට app එකක් වගේ install කරන්න.</small></div>
+  <button class="install-now" id="pwa-install-btn" type="button">INSTALL</button>
+  <button class="install-close" id="pwa-install-close" type="button">×</button>
+</div>
+
 <div class="container" style="max-width:500px;margin:auto;">
 
 <!-- ══ 1. HOME ══ -->
@@ -269,22 +289,6 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
     <div class="col-6"><div class="sc sc3"><span class="si">💰</span><span class="stat-value" id="st-rev">0</span><span class="stat-label">Revenue (Rs)</span></div></div>
     <div class="col-6"><div class="sc sc4"><span class="si">🕐</span><span class="stat-value" id="st-stamp">0</span><span class="stat-label">Today Stamps</span></div></div>
   </div>
-
-  <!-- ── PWA Install Card ── shown only when not installed ── -->
-  <div id="install-card" style="display:none;">
-    <div class="ic-icon">📲</div>
-    <div class="ic-text">
-      <strong>INSTALL APP</strong>
-      <small>Home screen eke add කරන්න · Offline wedi use</small>
-      <div class="ic-ios" id="ios-hint" style="display:none;">
-        Safari → <b>Share ⬆</b> → <b>"Add to Home Screen"</b>
-      </div>
-    </div>
-    <button class="ic-btn" id="install-btn" onclick="installPWA()">
-      <i class="fas fa-download me-1"></i>Install
-    </button>
-  </div>
-
   <div class="d-grid gap-3 mb-3">
     <button class="reb py-4" onclick="navTo('s-scan');setTimeout(startScanner,350);"><i class="fas fa-qrcode me-2"></i>QR SCANNER</button>
     <div class="row g-3">
@@ -296,6 +300,7 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
       <div class="col-6"><button class="qb" onclick="openAdmin()"><span class="qi">⚙️</span>Admin</button></div>
     </div>
   </div>
+  <!-- Daily Summary -->
   <button class="day-btn mb-3" onclick="generateDailySummary()">
     <i class="fas fa-calendar-day me-2"></i>📤 DAILY SUMMARY — SEND TODAY'S REPORT
   </button>
@@ -317,18 +322,21 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
       <div class="col-6 fg"><span class="fl">Phone *</span><input type="text" id="rg-phone" class="fc" placeholder="දුරකථනය" readonly onclick="openKp('rg-phone')" style="cursor:pointer;"></div>
       <div class="col-6 fg"><span class="fl">NIC</span><input type="text" id="rg-nic" class="fc" placeholder="NIC"></div>
     </div>
+    <!-- Address 2 fields -->
     <div class="fg"><span class="fl">Address Line 1 (Street / Lane)</span><input type="text" id="rg-addr1" class="fc" placeholder="No. 12, Main Street, Galle Road"></div>
     <div class="fg city-wrap">
       <span class="fl">Nearest City / Town</span>
       <input type="text" id="rg-addr2" class="fc" placeholder="Type city name..." autocomplete="off" oninput="citySuggest(this,'rg-cd')" onblur="setTimeout(()=>closeDrop('rg-cd'),200)">
       <div class="city-drop" id="rg-cd"></div>
     </div>
+    <!-- GPS -->
     <div class="fg">
       <div class="d-flex gap-2">
         <button class="rebl" style="width:auto;padding:10px 16px;font-size:12px;" onclick="fetchGPS()"><i class="fas fa-location-dot me-1"></i>GPS</button>
         <small id="gps-status" class="text-success fw-bold align-self-center" style="font-size:10px;"></small>
       </div>
     </div>
+    <!-- Scales -->
     <div class="d-flex justify-content-between align-items-center mb-2">
       <span class="fl mb-0">⚖️ Scale Details</span>
       <button style="background:var(--p);color:white;border:none;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;" onclick="addScaleRow()">+ Add Scale</button>
@@ -380,16 +388,21 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
       <h6 class="fw-bold mb-0" style="color:var(--p);letter-spacing:1px;">🔧 SERVICE ENTRY</h6>
       <span id="svc-inv-no" style="font-family:'Rajdhani',sans-serif;font-size:12px;color:#64748b;font-weight:700;"></span>
     </div>
+
+    <!-- Search box -->
     <div class="fg" style="position:relative;">
       <span class="fl">Search Customer (Name / Phone)</span>
       <input type="text" id="svc-search" class="fc" placeholder="Type to search from database..." autocomplete="off"
              oninput="custSearch(this.value)" onblur="setTimeout(()=>closeDrop('cust-dd'),250)">
       <div class="cust-drop" id="cust-dd"></div>
     </div>
+
+    <!-- Scale selector (multi) -->
     <div id="svc-scale-sel-wrap" style="display:none;" class="fg">
       <span class="fl">Select Scale</span>
       <select id="svc-scale-sel" class="fs" onchange="fillScaleFields()"></select>
     </div>
+
     <div class="row g-2">
       <div class="col-12 fg"><span class="fl">Customer Name</span><input type="text" id="svc-name" class="fc" placeholder="Customer Name"></div>
     </div>
@@ -397,6 +410,7 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
       <div class="col-6 fg"><span class="fl">Phone</span><input type="text" id="svc-phone" class="fc" placeholder="Phone" readonly onclick="openKp('svc-phone')" style="cursor:pointer;"></div>
       <div class="col-6 fg"><span class="fl">NIC / ID</span><input type="text" id="svc-nic" class="fc" placeholder="NIC"></div>
     </div>
+    <!-- Address 2 fields -->
     <div class="fg"><span class="fl">Address Line 1</span><input type="text" id="svc-addr1" class="fc" placeholder="Street / Lane"></div>
     <div class="fg city-wrap">
       <span class="fl">Nearest City / Town</span>
@@ -430,6 +444,8 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
     <div class="mb-3" style="background:linear-gradient(135deg,rgba(6,76,87,.06),rgba(10,107,122,.04));border-radius:12px;padding:12px;">
       <div style="font-size:12px;color:#64748b;font-weight:700;" id="stamp-cust-info"></div>
     </div>
+
+    <!-- Select All -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <span class="fl mb-0">⚖️ Select Scales to Stamp</span>
       <div class="d-flex gap-2">
@@ -531,10 +547,11 @@ h4,h5,.stat-value,.reb,.keypad-btn{font-family:'Rajdhani',sans-serif;}
 
 <script>
 // ════════════════════════════════════════════
-const LOGO_B64 = "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";
+const LOGO_B64 = "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";
 const ADM_PW = "1990";
 
-const SL_CITIES = ["Colombo","Dehiwala","Moratuwa","Sri Jayawardenepura Kotte","Negombo","Kandy","Galle","Trincomalee","Batticaloa","Jaffna","Anuradhapura","Polonnaruwa","Kurunegala","Ratnapura","Badulla","Matara","Hambantota","Vavuniya","Mannar","Nuwara Eliya","Gampaha","Kalutara","Matale","Kegalle","Monaragala","Ampara","Mullaitivu","Kilinochchi","Puttalam","Chilaw","Wennappuwa","Ja-Ela","Kadawatha","Maharagama","Kotte","Boralesgamuwa","Homagama","Piliyandala","Kesbewa","Nugegoda","Rajagiriya","Peliyagoda","Wattala","Hendala","Kandana","Ganemulla","Minuwangoda","Katunayake","Seeduwa","Ekala","Ragama","Kiribathgoda","Kelaniya","Dalugama","Biyagama","Avissawella","Padukka","Hanwella","Dompe","Nittambuwa","Divulapitiya","Mirigama","Veyangoda","Alawwa","Meerigama","Kuliyapitiya","Polgahawela","Narammala","Pannala","Bingiriya","Wariyapola","Maho","Nikaweratiya","Ibbagamuwa","Giriulla","Hettipola","Melsiripura","Dambadeniya","Kobeigane","Kekirawa","Habarana","Eppawala","Talawa","Medawachchiya","Kahatagasdigiliya","Galenbindunuwewa","Tambuttegama","Nochchiyagama","Rajanganaya","Mihintale","Hatton","Talawakele","Nawalapitiya","Ginigathena","Maskeliya","Watawala","Kotagala","Bogawantalawa","Haputale","Welimada","Bandarawela","Ella","Diyatalawa","Mahiyanganaya","Passara","Lunugala","Hali-Ela","Kalmunai","Akkaraipattu","Pottuvil","Sammanthurai","Nintavur","Sainthamaruthu","Karaitivu","Lahugala","Mahaoya","Dehiattakandiya","Uhana","Horana","Panadura","Wadduwa","Beruwala","Aluthgama","Bentota","Balapitiya","Ambalangoda","Hikkaduwa","Unawatuna","Weligama","Mirissa","Dikwella","Tangalle","Beliatta","Tissamaharama","Ambalantota","Embilipitiya","Balangoda","Rakwana","Pelmadulla","Eheliyagoda","Kinniya","Muttur","Seruwila","Kantale","Morawewa","Nilaveli","Valaichenai","Eravur","Chenkaladi","Kattankudy","Vakarai","Musali","Madhu","Puthukkudiyiruppu","Oddusuddan","Paranthan","Nallur","Chavakachcheri","Point Pedro","Chankanai","Kopay","Uduvil","Manipay","Tellippalai","Chunnakam","Nelliady","Karainagar","Kayts","Velanai","Pooneryn","Kankesanthurai"];
+// Sri Lanka cities
+const SL_CITIES = ["Colombo","Dehiwala","Moratuwa","Sri Jayawardenepura Kotte","Negombo","Kandy","Sri Lanka","Galle","Trincomalee","Batticaloa","Jaffna","Anuradhapura","Polonnaruwa","Kurunegala","Ratnapura","Badulla","Matara","Hambantota","Vavuniya","Mannar","Nuwara Eliya","Gampaha","Kalutara","Matale","Kegalle","Monaragala","Ampara","Mullaitivu","Kilinochchi","Puttalam","Chilaw","Wennappuwa","Ja-Ela","Kadawatha","Maharagama","Kotte","Boralesgamuwa","Homagama","Piliyandala","Kesbewa","Nugegoda","Rajagiriya","Peliyagoda","Wattala","Hendala","Kandana","Ganemulla","Gampaha","Minuwangoda","Katunayake","Seeduwa","Ekala","Ragama","Kiribathgoda","Kelaniya","Dalugama","Biyagama","Avissawella","Padukka","Hanwella","Dompe","Nittambuwa","Divulapitiya","Mirigama","Veyangoda","Alawwa","Meerigama","Kuliyapitiya","Polgahawela","Narammala","Pannala","Bingiriya","Wariyapola","Maho","Nikaweratiya","Ibbagamuwa","Giriulla","Hettipola","Melsiripura","Dambadeniya","Kobeigane","Mawatagama","Padeniya","Kekirawa","Habarana","Eppawala","Talawa","Medawachchiya","Kahatagasdigiliya","Galenbindunuwewa","Padaviya","Kebithigollewa","Horowpothana","Rambewa","Tambuttegama","Thambuttegama","Nochchiyagama","Rajanganaya","Mihintale","Nuwara Eliya","Hatton","Talawakele","Nawalapitiya","Ginigathena","Maskeliya","Watawala","Kotagala","Bogawantalawa","Haputale","Welimada","Bandarawela","Ella","Diyatalawa","Badulla","Mahiyanganaya","Passara","Lunugala","Hali-Ela","Soranathota","Ridimaliyadda","Kandaketiya","Rideemaliyadda","Ampara","Kalmunai","Akkaraipattu","Pottuvil","Sammanthurai","Nintavur","Sainthamaruthu","Karaitivu","Thirukovil","Lahugala","Mahaoya","Dehiattakandiya","Uhana","Damana","Nawakkulama","Padiyathalawa","Maha Oya","Namal Oya","Digamadulla","Piliyandala","Horana","Panadura","Wadduwa","Beruwala","Aluthgama","Bentota","Balapitiya","Ambalangoda","Hikkaduwa","Galle","Unawatuna","Matara","Weligama","Mirissa","Dikwella","Tangalle","Beliatta","Tissamaharama","Hambantota","Ambalantota","Angunukolapelessa","Sooriyawewa","Lunugamvehera","Kirinda","Kataragama","Embilipitiya","Balangoda","Rakwana","Kolonna","Pelmadulla","Eheliyagoda","Avissawella","Ratnapura","Kegalle","Mawanella","Rambukkana","Galigamuwa","Warakapola","Ruwanwella","Dehiowita","Aranayaka","Yatiyantota","Kitulgala","Deraniyagala","Bulathkohupitiya","Trincomalee","Kinniya","Muttur","Seruwila","Kantale","Morawewa","Kuchchaveli","Nilaveli","Batticaloa","Valaichenai","Eravur","Chenkaladi","Kattankudy","Oddamavadi","Vakarai","Vavuniya","Mannar","Musali","Madhu","Manthai West","Mullaitivu","Puthukkudiyiruppu","Oddusuddan","Maritimepattu","Kilinochchi","Paranthan","Jaffna","Nallur","Chavakachcheri","Point Pedro","Chankanai","Kopay","Uduvil","Manipay","Tellippalai","Chunnakam","Nelliady","Karainagar","Kayts","Velanai","Pooneryn","Kankesanthurai"];
 
 // ════ DB ════
 const db = new Dexie("TLpos_V3_DB");
@@ -559,7 +576,7 @@ let stampCust=null, stampChecks={};
 
 // ════ NAV ════
 const NM={'s-home':'n-home','s-scan':'n-scan','s-reg':'n-reg','s-list':'n-list','s-reports':'n-rpt'};
-function navTo(id){ if(id==='s-home') setTimeout(checkInstallCard,100);
+function navTo(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -571,27 +588,15 @@ function navTo(id){ if(id==='s-home') setTimeout(checkInstallCard,100);
 
 // ════ GPS ════
 function fetchGPS(){
-  const st=document.getElementById('gps-status');
-  if(!navigator.geolocation){st.innerText="❌ GPS not supported";st.style.color="#dc2626";return;}
-  st.innerText="📡 Searching...";st.style.color="#0a6b7a";
-  navigator.geolocation.getCurrentPosition(
-    p=>{
-      gps=p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6);
-      st.innerText="✅ "+gps;st.style.color="#10b981";
-    },
-    err=>{
-      let msg="❌ GPS failed";
-      if(err.code===1) msg="❌ Permission denied — Enable location in browser settings";
-      else if(err.code===2) msg="❌ Position unavailable";
-      else if(err.code===3) msg="❌ Timeout";
-      st.innerText=msg;st.style.color="#dc2626";
-    },
-    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
-  );
+  document.getElementById('gps-status').innerText="📡 Searching...";
+  navigator.geolocation.getCurrentPosition(p=>{
+    gps=p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6);
+    document.getElementById('gps-status').innerText="✅ "+gps;
+  },()=>alert('Location permission needed'),{enableHighAccuracy:true});
 }
 
 // ════ CITY SUGGESTIONS ════
-function citySuggest(inp,dropId){
+function citySuggest(inp, dropId){
   const v=inp.value.trim().toLowerCase();
   const drop=document.getElementById(dropId);
   if(v.length<1){drop.classList.remove('open');return;}
@@ -606,7 +611,7 @@ function pickCity(city,inpId,dropId){
 }
 function closeDrop(id){document.getElementById(id).classList.remove('open');}
 
-// ════ CUSTOMER AUTOCOMPLETE ════
+// ════ CUSTOMER AUTOCOMPLETE (SERVICE PAGE) ════
 let allCustomers=[];
 async function loadAllCustomers(){allCustomers=await db.customers.toArray();}
 
@@ -636,12 +641,15 @@ async function pickCustomer(id){
   document.getElementById('svc-addr1').value=cust.addr1||cust.addr||'';
   document.getElementById('svc-addr2').value=cust.addr2||'';
   document.getElementById('svc-qrid').value=cust.qr_id||'';
+  // Scales
   const scales=cust.scales||[];
   const sw=document.getElementById('svc-scale-sel-wrap');
   const sel=document.getElementById('svc-scale-sel');
   if(scales.length>1){
     sel.innerHTML=scales.map((s,i)=>`<option value="${i}">${s.model||'Scale '+(i+1)} - ${s.serial||''}</option>`).join('');
-    sel.dataset.scales=JSON.stringify(scales);sw.style.display='block';fillScaleFields();
+    sel.dataset.scales=JSON.stringify(scales);
+    sw.style.display='block';
+    fillScaleFields();
   } else {
     sw.style.display='none';
     const s=scales[0]||{};
@@ -660,8 +668,10 @@ function fillScaleFields(){
   document.getElementById('svc-weight').value=s.weight?s.weight.replace(' kg',''):'';
 }
 
+// ════ WEIGHT FORMAT ════
 function fmtW(inp){inp.value=inp.value.replace(/[^0-9.]/g,'');}
 
+// ════ SCALE ROWS ════
 function addScaleRow(){
   document.getElementById('scales-list').insertAdjacentHTML('beforeend',`
     <div class="sb">
@@ -692,21 +702,56 @@ async function saveCustomer(){
     addr2:document.getElementById('rg-addr2').value,
     gps,scales
   });
-  allCustomers=[];
+  allCustomers=[];// reset cache
   document.getElementById('qr-result-area').style.display='block';
   document.getElementById('p-cust-name').innerText=name;
   document.getElementById('p-qr-id').innerText=qrid;
   document.getElementById('qrcode-box').innerHTML='';
   new QRCode(document.getElementById('qrcode-box'),{text:qrid,width:190,height:190,correctLevel:QRCode.CorrectLevel.H});
   setTimeout(overlayLogo,400);
-  Swal.fire('✅ Registered',name+' added!','success');
+  Swal.fire({
+    title:'✅ Registered!',
+    html:`<b>${name}</b> successfully added!<br><br>
+          <button onclick="Swal.close();resetRegForm();" 
+            style="background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:12px;padding:12px 24px;font-weight:700;font-size:15px;cursor:pointer;letter-spacing:1px;margin-right:8px;">
+            ➕ Add New Customer
+          </button>`,
+    icon:'success',
+    showConfirmButton:false,
+    timer:8000
+  });
   updateStats();
   document.getElementById('qr-result-area').scrollIntoView({behavior:'smooth'});
 }
 
+function resetRegForm(){
+  // Clear all fields
+  document.getElementById('rg-name').value='';
+  document.getElementById('rg-phone').value='';
+  document.getElementById('rg-nic').value='';
+  document.getElementById('rg-addr1').value='';
+  document.getElementById('rg-addr2').value='';
+  document.getElementById('gps-status').innerText='';
+  // Reset scales to single empty row
+  document.getElementById('scales-list').innerHTML=`
+    <div class="sb">
+      <input type="text" class="fc s-model mb-2" placeholder="Model">
+      <div class="row g-2">
+        <div class="col-6"><input type="text" class="fc s-serial" placeholder="Serial No."></div>
+        <div class="col-6 ww"><input type="text" class="fc s-weight" placeholder="Weight" oninput="fmtW(this)"><span class="kb">kg</span></div>
+      </div>
+    </div>`;
+  // Hide QR result
+  document.getElementById('qr-result-area').style.display='none';
+  document.getElementById('qrcode-box').innerHTML='';
+  // Scroll to top of form
+  window.scrollTo({top:0,behavior:'smooth'});
+  gps='';
+}
+
 function overlayLogo(){
   const canvas=document.querySelector('#qrcode-box canvas');if(!canvas)return;
-  const ctx=canvas.getContext('2d'),img=new Image();
+  const ctx=canvas.getContext('2d'), img=new Image();
   img.onload=function(){
     const sz=canvas.width*.22,x=(canvas.width-sz)/2,y=(canvas.height-sz)/2;
     ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,sz/2+6,0,Math.PI*2);
@@ -721,10 +766,6 @@ function overlayLogo(){
 async function startScanner(){
   if(scanning)return;
   const sb=document.getElementById('start-btn'),se=document.getElementById('scan-err'),ss=document.getElementById('ssb');
-  // Check HTTPS
-  if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){
-    se.innerText="⚠️ Camera needs HTTPS. Use GitHub Pages URL.";return;
-  }
   try{
     if(html5QrCode){try{await html5QrCode.stop();await html5QrCode.clear();}catch(e){}}
     html5QrCode=new Html5Qrcode("reader");
@@ -741,12 +782,7 @@ async function startScanner(){
       se.innerText='';
     }
   }catch(err){
-    scanning=false;
-    let msg="Camera Error: "+err;
-    if(String(err).includes('Permission')||String(err).includes('NotAllowed')){
-      msg="📷 Camera permission denied. Browser settings > Camera > Allow.";
-    }
-    se.innerText=msg;
+    scanning=false;se.innerText="Camera Error: "+err;
     ss.innerHTML='<i class="fas fa-exclamation-triangle me-2" style="color:#dc2626;"></i>Camera failed';
     sb.innerHTML='<i class="fas fa-play me-2"></i>START CAMERA';
   }
@@ -766,6 +802,7 @@ async function handleScan(qrid){
   showChoiceModal(cust);
 }
 
+// ════ SCAN CHOICE MODAL ════
 function showChoiceModal(cust){
   Swal.fire({
     title:`<strong style="color:#064C57;">${cust.name}</strong>`,
@@ -785,6 +822,7 @@ function showChoiceModal(cust){
   });
 }
 
+// ════ SERVICE PAGE ════
 function openServicePage(cust){
   document.getElementById('svc-search').value='';
   document.getElementById('svc-name').value=cust.name||'';
@@ -814,15 +852,23 @@ function openServicePage(cust){
   navTo('s-service');
 }
 
+// ════ STAMP PAGE ════
 function openStampPage(cust){
-  stampCust=cust;stampChecks={};
+  stampCust=cust; stampChecks={};
   document.getElementById('stamp-cust-name').innerText=cust.name;
   document.getElementById('stamp-cust-info').innerHTML=
     `📞 ${cust.phone||'-'}${cust.nic?' &nbsp;|&nbsp; 🪪 '+cust.nic:''}${(cust.addr1||cust.addr2)?'<br>📍 '+(cust.addr1?cust.addr1+', ':'')+(cust.addr2||''):''}`;
   const scales=cust.scales||[];
   const list=document.getElementById('stamp-scales-list');
-  if(!scales.length){list.innerHTML='<div class="text-center text-muted py-3" style="font-size:13px;">No scales registered.</div>';stampChecks['all']=true;navTo('s-stamp');return;}
-  scales.forEach((_,i)=>{stampChecks[i]=true;});
+  if(!scales.length){
+    list.innerHTML='<div class="text-center text-muted py-3" style="font-size:13px;">No scales registered for this customer.</div>';
+    // default stamp with no scale
+    stampChecks['all']=true;
+    navTo('s-stamp');return;
+  }
+  scales.forEach((s,i)=>{
+    stampChecks[i]=true;// default all checked
+  });
   list.innerHTML=scales.map((s,i)=>`
     <div class="stamp-scale-item stamped" id="ssi-${i}" onclick="toggleStampCheck(${i})">
       <div class="stamp-check checked" id="sc-${i}"><i class="fas fa-check" style="font-size:13px;"></i></div>
@@ -836,21 +882,39 @@ function openStampPage(cust){
 
 function toggleStampCheck(i){
   stampChecks[i]=!stampChecks[i];
-  const item=document.getElementById('ssi-'+i),chk=document.getElementById('sc-'+i);
-  if(stampChecks[i]){item.className='stamp-scale-item stamped';chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';}
-  else{item.className='stamp-scale-item unstamped';chk.className='stamp-check';chk.innerHTML='';}
+  const item=document.getElementById('ssi-'+i);
+  const chk=document.getElementById('sc-'+i);
+  if(stampChecks[i]){
+    item.className='stamp-scale-item stamped';
+    chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';
+  } else {
+    item.className='stamp-scale-item unstamped';
+    chk.className='stamp-check';chk.innerHTML='';
+  }
 }
 function stampSelectAll(v){
-  if(!stampCust)return;
-  (stampCust.scales||[]).forEach((_,i)=>{stampChecks[i]=v;toggleStampCheck(i);if(v){stampChecks[i]=true;const item=document.getElementById('ssi-'+i),chk=document.getElementById('sc-'+i);if(item){item.className='stamp-scale-item stamped';chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';}}});
+  if(!stampCust) return;
+  const scales=stampCust.scales||[];
+  scales.forEach((_,i)=>{stampChecks[i]=v;toggleStampCheck(i);if(v){stampChecks[i]=true;const item=document.getElementById('ssi-'+i);const chk=document.getElementById('sc-'+i);if(item){item.className='stamp-scale-item stamped';chk.className='stamp-check checked';chk.innerHTML='<i class="fas fa-check" style="font-size:13px;"></i>';}}});
 }
 async function saveStamp(){
-  if(!stampCust)return;
+  if(!stampCust) return;
   const scales=stampCust.scales||[];
   let stampedScales=[],unstampedScales=[];
   if(scales.length===0){stampedScales=['General Stamp'];}
-  else{scales.forEach((s,i)=>{const label=(s.model||'Scale '+(i+1))+(s.serial?' ('+s.serial+')':'');if(stampChecks[i])stampedScales.push(label);else unstampedScales.push(label);});}
-  await db.logs.add({cust_id:stampCust.qr_id,cust_name:stampCust.name,date:new Date().toISOString(),amount:0,type:'Stamp',notes:`Stamped: ${stampedScales.join(', ')}${unstampedScales.length?' | Not stamped: '+unstampedScales.join(', '):''}`,stamp_scales:JSON.stringify({stamped:stampedScales,unstamped:unstampedScales})});
+  else{
+    scales.forEach((s,i)=>{
+      const label=(s.model||'Scale '+(i+1))+(s.serial?' ('+s.serial+')':'');
+      if(stampChecks[i]) stampedScales.push(label);
+      else unstampedScales.push(label);
+    });
+  }
+  await db.logs.add({
+    cust_id:stampCust.qr_id,cust_name:stampCust.name,
+    date:new Date().toISOString(),amount:0,type:'Stamp',
+    notes:`Stamped: ${stampedScales.join(', ')}${unstampedScales.length?' | Not stamped: '+unstampedScales.join(', '):''}`,
+    stamp_scales:JSON.stringify({stamped:stampedScales,unstamped:unstampedScales})
+  });
   Swal.fire('✅ Stamp Saved',`Stamped ${stampedScales.length} scale(s) for ${stampCust.name}`,'success');
   navTo('s-home');updateStats();
 }
@@ -858,11 +922,12 @@ async function saveStamp(){
 // ════ INVOICE ════
 async function generateInvoice(){
   const name=document.getElementById('svc-name').value;
-  if(!name)return Swal.fire('Error','Customer name required','warning');
+  if(!name) return Swal.fire('Error','Customer name required','warning');
   const d={
     inv_no:document.getElementById('svc-inv-no').dataset.inv,
     cust_id:document.getElementById('svc-qrid').value,
-    cust_name:name,phone:document.getElementById('svc-phone').value,
+    cust_name:name,
+    phone:document.getElementById('svc-phone').value,
     nic:document.getElementById('svc-nic').value,
     addr1:document.getElementById('svc-addr1').value,
     addr2:document.getElementById('svc-addr2').value,
@@ -890,7 +955,7 @@ function buildInvHTML(d){
   const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
   return `<div class="inv-wrap">
   <div class="inv-hdr">
-    <div class="inv-logo-a"><img class="inv-logo" src="icons/icon-96.png" alt="Logo" onerror="this.style.display='none'"><div class="inv-co">${d.company||'Ceylon Weighing Machine Ltd'}<small>Service Dept.</small>${d.cphone?'<small>'+d.cphone+'</small>':''}</div></div>
+    <div class="inv-logo-a"><img class="inv-logo" src="data:image/jpeg;base64,${LOGO_B64}" alt="Logo"><div class="inv-co">${d.company||'Ceylon Weighing Machine Ltd'}<small>Service Dept.</small>${d.cphone?'<small>'+d.cphone+'</small>':''}</div></div>
     <div class="inv-no"><div class="num">#${d.inv_no}</div><small>SERVICE INVOICE</small><small>${ds}</small></div>
   </div>
   <div class="ist">Customer Information</div>
@@ -939,18 +1004,91 @@ function printInvoice(){
       .iab .tl{font-size:11px;opacity:.85;letter-spacing:1px;}.iab .tv{font-size:24px;font-weight:700;color:#F59E0B;}
       .iftr{text-align:center;margin-top:12px;font-size:10px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;}
       .print-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:1px;}
-      
-/* Install card on home page */
-@media print{.print-btn{display:none!important;}}
-    
-</style></head><body>
+      @media print{.print-btn{display:none!important;}}
+    </style>
+<!-- PWA SETTINGS -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* PWA Install Button */
+.install-banner{display:none;position:fixed;left:14px;right:14px;bottom:92px;z-index:5000;background:linear-gradient(135deg,#064C57,#0a6b7a);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);align-items:center;gap:10px;}
+.install-banner.show{display:flex;}
+.install-banner .ib-text{flex:1;font-size:12px;line-height:1.35;font-weight:700;}
+.install-banner .ib-text small{display:block;font-size:10px;opacity:.82;font-weight:500;margin-top:2px;}
+.install-banner button{border:none;border-radius:12px;padding:10px 12px;font-weight:800;font-size:12px;cursor:pointer;}
+.install-banner .install-now{background:#F59E0B;color:#111;}
+.install-banner .install-close{background:rgba(255,255,255,.18);color:white;}
+@media (display-mode: standalone){.install-banner{display:none!important;}}
+</style>
+</head><body>
     ${html}
     <button class="print-btn" onclick="window.print()">🖨️ PRINT</button>
-    </body></html>`);
+    
+<script>
+// ══ PWA INSTALL BUTTON ══
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const installCloseBtn = document.getElementById('pwa-install-close');
+
+function isAppInstalledMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function hideInstallBanner(){ if(installBanner) installBanner.classList.remove('show'); }
+function showInstallBanner(){
+  if(!installBanner) return;
+  if(isAppInstalledMode()) return hideInstallBanner();
+  if(localStorage.getItem('tlpos_install_dismissed') === 'yes') return;
+  installBanner.classList.add('show');
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+if(installBtn){
+  installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt){
+      Swal.fire('Install Help', 'Chrome menu ⋮ → Add to Home screen / Install app තෝරන්න.', 'info');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if(choice && choice.outcome === 'accepted') hideInstallBanner();
+  });
+}
+if(installCloseBtn){
+  installCloseBtn.addEventListener('click', function(){
+    localStorage.setItem('tlpos_install_dismissed','yes');
+    hideInstallBanner();
+  });
+}
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('tlpos_installed','yes');
+  hideInstallBanner();
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(){ console.log('TLpos PWA ready'); })
+      .catch(function(err){ console.error('Service worker registration failed', err); });
+  });
+}
+window.addEventListener('load', function(){ if(isAppInstalledMode()) hideInstallBanner(); });
+</script>
+
+</body></html>`);
     w.document.close();
   } else {
+    // fallback
     const pa=document.getElementById('inv-print-area');
-    pa.innerHTML=html;pa.style.display='block';
+    pa.innerHTML=html; pa.style.display='block';
     window.print();
     setTimeout(()=>pa.style.display='none',1500);
   }
@@ -961,11 +1099,11 @@ function dlInvExcel(){
   if(!curInv)return;
   const d=curInv;
   const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
-  const rows=[{'Invoice No':d.inv_no,'Date':d.date,'Customer Name':d.cust_name,'Phone':d.phone,'NIC':d.nic,'Address Line 1':d.addr1,'Nearest City':d.addr2,'Address Full':addr,'Scale Model':d.model,'Serial No':d.serial,'Weight':d.weight,'Service Notes':d.notes,'Amount (Rs)':d.amount}];
-  const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:14},{wch:20},{wch:16},{wch:24},{wch:16},{wch:14},{wch:10},{wch:30},{wch:12}];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Invoice');
-  xlsxDownload(wb,`TLpos_Invoice_${d.inv_no}.xlsx`);
+  // Build HTML invoice table for display
+  const amt=parseFloat(d.amount||0).toLocaleString('en-LK',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const ds=d.date?new Date(d.date).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}):'';
+  const tableHtml = buildInvHTML(d);
+  openReportWindow(tableHtml, `Invoice_${d.inv_no}.xlsx`);
   if(d.adminEmail) setTimeout(()=>sendEmail(d),400);
 }
 
@@ -973,7 +1111,13 @@ function sendEmail(d){
   const subject=encodeURIComponent(`Service Invoice #${d.inv_no} - ${d.cust_name}`);
   const addr=((d.addr1?d.addr1+', ':'')+( d.addr2||'')).trim().replace(/,\s*$/,'');
   const amt=parseFloat(d.amount||0).toLocaleString('en-LK',{minimumFractionDigits:2});
-  const body=encodeURIComponent(`SERVICE INVOICE - TLpos Pro\n══════════════════════════\nInvoice No  : ${d.inv_no}\nDate        : ${d.date}\nCustomer    : ${d.cust_name}\nPhone       : ${d.phone||'-'}\nNIC         : ${d.nic||'-'}\nAddress     : ${addr||'-'}\n──────────────────────────\nScale Model : ${d.model||'-'}\nSerial No   : ${d.serial||'-'}\nWeight      : ${d.weight||'-'}\n──────────────────────────\nNotes       : ${d.notes||'-'}\n══════════════════════════\nTOTAL       : Rs ${amt}\n══════════════════════════\nGenerated by TLpos Pro`);
+  const body=encodeURIComponent(
+    `SERVICE INVOICE - TLpos Pro\n══════════════════════════\n`+
+    `Invoice No  : ${d.inv_no}\nDate        : ${d.date}\n`+
+    `Customer    : ${d.cust_name}\nPhone       : ${d.phone||'-'}\nNIC         : ${d.nic||'-'}\nAddress     : ${addr||'-'}\n`+
+    `──────────────────────────\nScale Model : ${d.model||'-'}\nSerial No   : ${d.serial||'-'}\nWeight      : ${d.weight||'-'}\n`+
+    `──────────────────────────\nNotes       : ${d.notes||'-'}\n══════════════════════════\nTOTAL       : Rs ${amt}\n══════════════════════════\nGenerated by TLpos Pro`
+  );
   window.open(`mailto:${d.adminEmail}?subject=${subject}&body=${body}`,'_blank');
 }
 
@@ -985,38 +1129,79 @@ async function generateDailySummary(){
   const todayLogs=allLogs.filter(l=>l.date.startsWith(today));
   const todayInv=allInv.filter(i=>i.date===today);
   const stamps=todayLogs.filter(l=>l.type==='Stamp');
-  if(!todayLogs.length)return Swal.fire('No Data',`No records for today (${today})`,'info');
+  const svcLogs=todayLogs.filter(l=>l.type==='Service');
+  if(!todayLogs.length) return Swal.fire('No Data',`No records for today (${today})`,'info');
+
   const wb=XLSX.utils.book_new();
   const dateStr=new Date().toLocaleDateString('en-GB');
+
+  // ── Sheet 1: Service Invoices ──
   if(todayInv.length){
-    const svcRows=todayInv.map(i=>({'Invoice No':i.inv_no,'Service Date':i.date,'Customer Name':i.cust_name,'Phone':i.phone||'-','NIC':i.nic||'-','Address Line 1':i.addr1||'-','Nearest City':i.addr2||'-','Scale Model':i.model||'-','Serial No':i.serial||'-','Weight':i.weight||'-','Service Notes':i.notes||'-','Amount (Rs)':i.amount||0}));
-    const ws=XLSX.utils.json_to_sheet(svcRows);ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:14},{wch:22},{wch:16},{wch:16},{wch:14},{wch:12},{wch:30},{wch:12}];
+    const svcRows=todayInv.map(i=>({
+      'Invoice No':i.inv_no,'Service Date':i.date,
+      'Customer Name':i.cust_name,'Phone':i.phone||'-','NIC':i.nic||'-',
+      'Address Line 1':i.addr1||'-','Nearest City':i.addr2||'-',
+      'Scale Model':i.model||'-','Serial No':i.serial||'-','Weight':i.weight||'-',
+      'Service Notes':i.notes||'-','Amount (Rs)':i.amount||0
+    }));
+    const ws=XLSX.utils.json_to_sheet(svcRows);
+    ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:14},{wch:22},{wch:16},{wch:16},{wch:14},{wch:12},{wch:30},{wch:12}];
     XLSX.utils.book_append_sheet(wb,ws,'Services');
   }
+
+  // ── Sheet 2: Stamp Records ──
   if(stamps.length){
     const stampRows=[];
     for(const s of stamps){
       const cust=await db.customers.where('qr_id').equals(s.cust_id||'').first();
       let stampedList='-',unstampedList='-';
-      if(s.stamp_scales){try{const ss=JSON.parse(s.stamp_scales);stampedList=ss.stamped.join(', ')||'-';unstampedList=ss.unstamped.join(', ')||'-';}catch(e){}}
-      stampRows.push({'Stamp Date':new Date(s.date).toLocaleDateString('en-CA'),'Time':new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),'Customer Name':s.cust_name,'Phone':cust?cust.phone:'-','Address Line 1':cust?(cust.addr1||cust.addr||'-'):'-','Nearest City':cust?(cust.addr2||'-'):'-','Scales Stamped':stampedList,'Scales NOT Stamped':unstampedList,'Notes':s.notes||'-'});
+      if(s.stamp_scales){
+        try{const ss=JSON.parse(s.stamp_scales);stampedList=ss.stamped.join(', ')||'-';unstampedList=ss.unstamped.join(', ')||'-';}catch(e){}
+      }
+      stampRows.push({
+        'Stamp Date':new Date(s.date).toLocaleDateString('en-CA'),
+        'Time':new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+        'Customer Name':s.cust_name,
+        'Phone':cust?cust.phone:'-',
+        'Address Line 1':cust?(cust.addr1||cust.addr||'-'):'-',
+        'Nearest City':cust?(cust.addr2||'-'):'-',
+        'Scales Stamped':stampedList,
+        'Scales NOT Stamped':unstampedList,
+        'Notes':s.notes||'-'
+      });
     }
-    const ws=XLSX.utils.json_to_sheet(stampRows);ws['!cols']=[{wch:12},{wch:8},{wch:20},{wch:14},{wch:22},{wch:16},{wch:30},{wch:24},{wch:30}];
+    const ws=XLSX.utils.json_to_sheet(stampRows);
+    ws['!cols']=[{wch:12},{wch:8},{wch:20},{wch:14},{wch:22},{wch:16},{wch:30},{wch:24},{wch:30}];
     XLSX.utils.book_append_sheet(wb,ws,'Stamps');
   }
+
+  // ── Sheet 3: Summary ──
   const totRev=todayInv.reduce((a,b)=>a+(b.amount||0),0);
-  const sumRows=[{'Metric':'Date','Value':dateStr},{'Metric':'Total Services','Value':todayInv.length},{'Metric':'Total Stamps','Value':stamps.length},{'Metric':'Total Activities','Value':todayLogs.length},{'Metric':'Total Revenue (Rs)','Value':totRev.toLocaleString('en-LK',{minimumFractionDigits:2})},{'Metric':'Generated At','Value':new Date().toLocaleTimeString()}];
-  const ws3=XLSX.utils.json_to_sheet(sumRows);ws3['!cols']=[{wch:22},{wch:20}];
+  const sumRows=[
+    {'Metric':'Date','Value':dateStr},
+    {'Metric':'Total Services','Value':todayInv.length},
+    {'Metric':'Total Stamps','Value':stamps.length},
+    {'Metric':'Total Activities','Value':todayLogs.length},
+    {'Metric':'Total Revenue (Rs)','Value':totRev.toLocaleString('en-LK',{minimumFractionDigits:2})},
+    {'Metric':'Generated At','Value':new Date().toLocaleTimeString()},
+  ];
+  const ws3=XLSX.utils.json_to_sheet(sumRows);
+  ws3['!cols']=[{wch:22},{wch:20}];
   XLSX.utils.book_append_sheet(wb,ws3,'Summary');
+
   const fname=`TLpos_DailySummary_${today}.xlsx`;
   xlsxDownload(wb,fname);
+
+  // Email
   const adminEmail=localStorage.getItem('tlpos_email')||'';
   if(adminEmail){
     const subject=encodeURIComponent(`Daily Summary ${dateStr} — TLpos Pro`);
-    const body=encodeURIComponent(`DAILY SUMMARY REPORT\nDate: ${dateStr}\n══════════════════\nTotal Services  : ${todayInv.length}\nTotal Stamps    : ${stamps.length}\nTotal Revenue   : Rs ${totRev.toLocaleString('en-LK',{minimumFractionDigits:2})}\n══════════════════\nGenerated by TLpos Pro`);
+    const body=encodeURIComponent(
+      `DAILY SUMMARY REPORT\nDate: ${dateStr}\n══════════════════\nTotal Services  : ${todayInv.length}\nTotal Stamps    : ${stamps.length}\nTotal Revenue   : Rs ${totRev.toLocaleString('en-LK',{minimumFractionDigits:2})}\n══════════════════\nPlease find the detailed Excel report attached.\nGenerated by TLpos Pro`
+    );
     window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`,'_blank');
   }
-  Swal.fire('✅ Daily Summary',`Report saved: ${fname}${adminEmail?'\n📧 Email opened!':''}`, 'success');
+  Swal.fire('✅ Daily Summary',`Report opened!${adminEmail?'\n📧 Email opened!':''}`, 'success');
 }
 
 // ════ DIRECTORY ════
@@ -1059,16 +1244,114 @@ async function exportData(type){
   else data=await db.logs.toArray();
   if(from&&type!=='customers') data=data.filter(l=>(l.date||'')>=from);
   if(to&&type!=='customers') data=data.filter(l=>(l.date||'')<=to+'T23:59');
-  if(!data.length)return Swal.fire('No Data','No records found.','info');
-  const ws=XLSX.utils.json_to_sheet(data);
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Records');
-  xlsxDownload(wb,`TLpos_${type}_Report.xlsx`);
+  if(!data.length) return Swal.fire('No Data','No records found.','info');
+
+  // Build HTML table (works in ANY Android WebView/APK)
+  const keys = Object.keys(data[0]||{}).filter(k=>k!=='id'&&!k.startsWith('_'));
+  let tableHtml = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  tableHtml += '<tr>'+keys.map(k=>`<th style="background:#064C57;color:white;padding:8px 10px;text-align:left;white-space:nowrap;font-size:11px;">${k}</th>`).join('')+'</tr>';
+  data.forEach((row,ri)=>{
+    tableHtml += '<tr>'+keys.map(k=>`<td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;background:${ri%2===0?'#f8fafc':'white'};white-space:nowrap;font-size:12px;">${row[k]??''}</td>`).join('')+'</tr>';
+  });
+  tableHtml += '</table></div>';
+
+  const typeLabel = {service:'Service Report',stamp:'Stamp Report',invoices:'Invoice History',customers:'Customer List'}[type]||type;
+  const dateRange = from||to ? ` (${from||'start'} to ${to||'now'})` : ' (All Records)';
+  openReportWindow(
+    `<h3 style="color:#064C57;margin-bottom:14px;font-size:15px;">${typeLabel}${dateRange} — ${data.length} records</h3>${tableHtml}`,
+    `TLpos_${type}_Report.xlsx`
+  );
 }
 async function exportDatabase(){
   const c=await db.customers.toArray(),l=await db.logs.toArray(),i=await db.invoices.toArray();
-  const jsonStr=JSON.stringify({customers:c,logs:l,invoices:i});
-  const dataUri='data:application/json;charset=utf-8,'+encodeURIComponent(jsonStr);
-  const a=document.createElement('a');a.href=dataUri;a.download=`TLpos_Backup_${Date.now()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  const jsonStr=JSON.stringify({customers:c,logs:l,invoices:i},null,2);
+  // Show backup in a window so user can copy or share
+  const w=window.open('','_blank');
+  if(w){
+    w.document.write('<html><head><meta charset="UTF-8"><title>TLpos Backup</title><style>body{font-family:monospace;background:#1e293b;color:#94a3b8;padding:20px;font-size:11px;}pre{white-space:pre-wrap;word-break:break-all;}.btn{display:block;width:100%;padding:14px;background:#064C57;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;letter-spacing:1px;}</style>
+<!-- PWA SETTINGS -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* PWA Install Button */
+.install-banner{display:none;position:fixed;left:14px;right:14px;bottom:92px;z-index:5000;background:linear-gradient(135deg,#064C57,#0a6b7a);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);align-items:center;gap:10px;}
+.install-banner.show{display:flex;}
+.install-banner .ib-text{flex:1;font-size:12px;line-height:1.35;font-weight:700;}
+.install-banner .ib-text small{display:block;font-size:10px;opacity:.82;font-weight:500;margin-top:2px;}
+.install-banner button{border:none;border-radius:12px;padding:10px 12px;font-weight:800;font-size:12px;cursor:pointer;}
+.install-banner .install-now{background:#F59E0B;color:#111;}
+.install-banner .install-close{background:rgba(255,255,255,.18);color:white;}
+@media (display-mode: standalone){.install-banner{display:none!important;}}
+</style>
+</head><body>');
+    w.document.write('<button class="btn" onclick="selectAll()">📋 SELECT ALL (then Copy)</button>');
+    w.document.write('<pre id="data">'+w.document.defaultView.encodeURIComponent?jsonStr.replace(/</g,"&lt;"):jsonStr+'</pre>');
+    w.document.write('<script>function selectAll(){var r=document.createRange();r.selectNode(document.getElementById("data"));window.getSelection().removeAllRanges();window.getSelection().addRange(r);}<\/script>');
+    w.document.write('
+<script>
+// ══ PWA INSTALL BUTTON ══
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const installCloseBtn = document.getElementById('pwa-install-close');
+
+function isAppInstalledMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function hideInstallBanner(){ if(installBanner) installBanner.classList.remove('show'); }
+function showInstallBanner(){
+  if(!installBanner) return;
+  if(isAppInstalledMode()) return hideInstallBanner();
+  if(localStorage.getItem('tlpos_install_dismissed') === 'yes') return;
+  installBanner.classList.add('show');
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+if(installBtn){
+  installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt){
+      Swal.fire('Install Help', 'Chrome menu ⋮ → Add to Home screen / Install app තෝරන්න.', 'info');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if(choice && choice.outcome === 'accepted') hideInstallBanner();
+  });
+}
+if(installCloseBtn){
+  installCloseBtn.addEventListener('click', function(){
+    localStorage.setItem('tlpos_install_dismissed','yes');
+    hideInstallBanner();
+  });
+}
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('tlpos_installed','yes');
+  hideInstallBanner();
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(){ console.log('TLpos PWA ready'); })
+      .catch(function(err){ console.error('Service worker registration failed', err); });
+  });
+}
+window.addEventListener('load', function(){ if(isAppInstalledMode()) hideInstallBanner(); });
+</script>
+
+</body></html>');
+    w.document.close();
+  } else {
+    Swal.fire('Backup Data','Copy this backup data and save it safely:\n\n(Too large to display - use email backup instead)','info');
+  }
 }
 async function importDatabase(){
   const {value:file}=await Swal.fire({title:'Select Backup',input:'file',inputAttributes:{accept:'.json'}});
@@ -1111,7 +1394,11 @@ function saveAdmSettings(){
   localStorage.setItem('tlpos_cphone',document.getElementById('adm-cphone').value);
   Swal.fire('✅ Saved','Settings saved','success');
 }
-function lockAdm(){document.getElementById('adm-lock').style.display='block';document.getElementById('adm-content').style.display='none';navTo('s-home');}
+function lockAdm(){
+  document.getElementById('adm-lock').style.display='block';
+  document.getElementById('adm-content').style.display='none';
+  navTo('s-home');
+}
 
 // ════ KEYPAD ════
 function openKp(tid){kpTgt=tid;kpVal=document.getElementById(tid).value||'';document.getElementById('kp-disp').innerText=kpVal||'_';document.getElementById('kp-overlay').classList.add('open');}
@@ -1122,160 +1409,340 @@ function kpDel(){kpVal=kpVal.slice(0,-1);document.getElementById('kp-disp').inne
 function kpClr(){kpVal='';document.getElementById('kp-disp').innerText='_';}
 function kpDone(){if(kpTgt)document.getElementById(kpTgt).value=kpVal;closeKp();}
 
-// ════ EXCEL DOWNLOAD ════
-function xlsxDownload(wb,filename){
-  try{
-    const wbout=XLSX.write(wb,{bookType:'xlsx',type:'base64'});
-    const dataUri='data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'+wbout;
-    const a=document.createElement('a');a.href=dataUri;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),300);
-  }catch(e){
-    const wbout=XLSX.write(wb,{bookType:'csv',type:'string'});
-    const dataUri='data:text/csv;charset=utf-8,'+encodeURIComponent(wbout);
-    const a=document.createElement('a');a.href=dataUri;a.download=filename.replace('.xlsx','.csv');document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),300);
+window.onload=()=>{updateStats();loadAllCustomers();};
+
+// ══ UNIVERSAL REPORT VIEWER (works in ANY Android APK WebView) ══
+function xlsxDownload(wb, filename){
+  // Build HTML tables from all sheets
+  let allHtml = '';
+  wb.SheetNames.forEach(sheetName => {
+    const ws = wb.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+    if(!rows.length) return;
+    allHtml += `<h3 style="color:#064C57;margin:20px 0 8px;font-size:14px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #064C57;padding-bottom:6px;">${sheetName}</h3>`;
+    allHtml += '<div style="overflow-x:auto;margin-bottom:16px;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+    rows.forEach((row,ri) => {
+      allHtml += '<tr>';
+      row.forEach(cell => {
+        if(ri===0) allHtml += `<th style="background:#064C57;color:white;padding:8px 10px;text-align:left;white-space:nowrap;font-size:11px;">${cell}</th>`;
+        else allHtml += `<td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;background:${ri%2===0?'#f8fafc':'white'};white-space:nowrap;">${cell}</td>`;
+      });
+      allHtml += '</tr>';
+    });
+    allHtml += '</table></div>';
+  });
+  openReportWindow(allHtml, filename);
+}
+
+function openReportWindow(tableHtml, filename){
+  const title = filename.replace('.xlsx','').replace(/_/g,' ');
+  const now = new Date().toLocaleString();
+  const w = window.open('','_blank');
+  if(w){
+    w.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>${title}</title>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{font-family:sans-serif;background:#f0f4f8;padding:0;}
+      .top-bar{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;padding:14px 16px;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
+      .top-bar h2{font-size:14px;font-weight:700;letter-spacing:1px;}
+      .top-bar small{font-size:10px;opacity:.75;display:block;margin-top:2px;}
+      .action-bar{display:flex;gap:8px;padding:12px 16px;background:white;border-bottom:1px solid #e5e7eb;position:sticky;top:56px;z-index:99;}
+      .btn{padding:10px 18px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:.5px;}
+      .btn-p{background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;}
+      .btn-s{background:linear-gradient(135deg,#10b981,#059669);color:white;}
+      .btn-c{background:linear-gradient(135deg,#f97316,#dc2626);color:white;}
+      .content{padding:16px;}
+      .meta{background:white;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#64748b;border-left:4px solid #F59E0B;}
+      @media print{
+        .action-bar,.top-bar{display:none!important;}
+        body{background:white;}
+        .content{padding:0;}
+        .meta{display:none;}
+      }
+    </style>
+<!-- PWA SETTINGS -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* PWA Install Button */
+.install-banner{display:none;position:fixed;left:14px;right:14px;bottom:92px;z-index:5000;background:linear-gradient(135deg,#064C57,#0a6b7a);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);align-items:center;gap:10px;}
+.install-banner.show{display:flex;}
+.install-banner .ib-text{flex:1;font-size:12px;line-height:1.35;font-weight:700;}
+.install-banner .ib-text small{display:block;font-size:10px;opacity:.82;font-weight:500;margin-top:2px;}
+.install-banner button{border:none;border-radius:12px;padding:10px 12px;font-weight:800;font-size:12px;cursor:pointer;}
+.install-banner .install-now{background:#F59E0B;color:#111;}
+.install-banner .install-close{background:rgba(255,255,255,.18);color:white;}
+@media (display-mode: standalone){.install-banner{display:none!important;}}
+</style>
+</head><body>
+    <div class="top-bar">
+      <div><h2>📊 ${title}</h2><small>Generated: ${now}</small></div>
+    </div>
+    <div class="action-bar">
+      <button class="btn btn-p" onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button class="btn btn-s" id="share-btn" onclick="shareReport()">📤 Share</button>
+      <button class="btn btn-c" onclick="window.close()">✕ Close</button>
+    </div>
+    <div class="content">
+      <div class="meta">💡 Tip: Use <strong>Print → Save as PDF</strong> to save this report to your device.</div>
+      ${tableHtml}
+    </div>
+    <script>
+    function shareReport(){
+      const text = document.title + '\n' + new Date().toLocaleString() + '\n\nGenerated by TLpos Pro';
+      if(navigator.share){
+        navigator.share({title:document.title, text:text});
+      } else {
+        const ta=document.createElement('textarea');
+        ta.value=window.location.href;
+        document.body.appendChild(ta);ta.select();
+        document.execCommand('copy');document.body.removeChild(ta);
+        alert('Page URL copied — paste in browser to open');
+      }
+    }
+    <\/script>
+    
+<script>
+// ══ PWA INSTALL BUTTON ══
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const installCloseBtn = document.getElementById('pwa-install-close');
+
+function isAppInstalledMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function hideInstallBanner(){ if(installBanner) installBanner.classList.remove('show'); }
+function showInstallBanner(){
+  if(!installBanner) return;
+  if(isAppInstalledMode()) return hideInstallBanner();
+  if(localStorage.getItem('tlpos_install_dismissed') === 'yes') return;
+  installBanner.classList.add('show');
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+if(installBtn){
+  installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt){
+      Swal.fire('Install Help', 'Chrome menu ⋮ → Add to Home screen / Install app තෝරන්න.', 'info');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if(choice && choice.outcome === 'accepted') hideInstallBanner();
+  });
+}
+if(installCloseBtn){
+  installCloseBtn.addEventListener('click', function(){
+    localStorage.setItem('tlpos_install_dismissed','yes');
+    hideInstallBanner();
+  });
+}
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('tlpos_installed','yes');
+  hideInstallBanner();
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(){ console.log('TLpos PWA ready'); })
+      .catch(function(err){ console.error('Service worker registration failed', err); });
+  });
+}
+window.addEventListener('load', function(){ if(isAppInstalledMode()) hideInstallBanner(); });
+</script>
+
+</body></html>`);
+    w.document.close();
+  } else {
+    // If popup blocked, show inline modal
+    showInlineReport(tableHtml, filename);
   }
 }
 
-// ════ QR PRINT ════
+function showInlineReport(tableHtml, filename){
+  const title = filename.replace('.xlsx','').replace(/_/g,' ');
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99999;overflow-y:auto;';
+  overlay.innerHTML = `
+    <div style="background:#f0f4f8;min-height:100%;padding-bottom:80px;">
+      <div style="background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;padding:14px 16px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;font-weight:700;">📊 ${title}</div><div style="font-size:10px;opacity:.75;">${new Date().toLocaleString()}</div></div>
+        <button onclick="this.closest('[style]').remove()" style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;">✕</button>
+      </div>
+      <div style="padding:12px 16px;background:white;border-bottom:1px solid #e5e7eb;display:flex;gap:8px;">
+        <button onclick="window.print()" style="flex:1;padding:11px;background:linear-gradient(135deg,#064C57,#0a6b7a);color:white;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;">🖨️ Print / PDF</button>
+      </div>
+      <div style="padding:16px;">
+        <div style="background:white;border-radius:12px;padding:12px;margin-bottom:14px;font-size:12px;color:#64748b;border-left:4px solid #F59E0B;">💡 Use <strong>Print → Save as PDF</strong> to save.</div>
+        ${tableHtml}
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+// ══ QR PRINT (mobile-safe) ══
 function printQR(){
-  const content=document.getElementById('print-area').innerHTML;
-  const w=window.open('','_blank','width=400,height=500');
+  const content = document.getElementById('print-area').innerHTML;
+  const w = window.open('','_blank','width=400,height=500');
   if(w){
     w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
       <style>body{font-family:sans-serif;text-align:center;padding:20px;background:white;}
-      img{max-width:100%;}.qr-brand-header{background:#8B0000;color:white;padding:12px;border-radius:10px;margin-bottom:12px;font-weight:700;font-size:14px;}
-      
-</style></head><body>${content}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+      img{max-width:100%;}
+      .qr-brand-header{background:#8B0000;color:white;padding:12px;border-radius:10px;margin-bottom:12px;font-weight:700;font-size:14px;}
+      </style>
+<!-- PWA SETTINGS -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064C57">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* PWA Install Button */
+.install-banner{display:none;position:fixed;left:14px;right:14px;bottom:92px;z-index:5000;background:linear-gradient(135deg,#064C57,#0a6b7a);color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);align-items:center;gap:10px;}
+.install-banner.show{display:flex;}
+.install-banner .ib-text{flex:1;font-size:12px;line-height:1.35;font-weight:700;}
+.install-banner .ib-text small{display:block;font-size:10px;opacity:.82;font-weight:500;margin-top:2px;}
+.install-banner button{border:none;border-radius:12px;padding:10px 12px;font-weight:800;font-size:12px;cursor:pointer;}
+.install-banner .install-now{background:#F59E0B;color:#111;}
+.install-banner .install-close{background:rgba(255,255,255,.18);color:white;}
+@media (display-mode: standalone){.install-banner{display:none!important;}}
+</style>
+</head><body>${content}<script>window.onload=function(){window.print();window.close();}<\/script>
+<script>
+// ══ PWA INSTALL BUTTON ══
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const installCloseBtn = document.getElementById('pwa-install-close');
+
+function isAppInstalledMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function hideInstallBanner(){ if(installBanner) installBanner.classList.remove('show'); }
+function showInstallBanner(){
+  if(!installBanner) return;
+  if(isAppInstalledMode()) return hideInstallBanner();
+  if(localStorage.getItem('tlpos_install_dismissed') === 'yes') return;
+  installBanner.classList.add('show');
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+if(installBtn){
+  installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt){
+      Swal.fire('Install Help', 'Chrome menu ⋮ → Add to Home screen / Install app තෝරන්න.', 'info');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if(choice && choice.outcome === 'accepted') hideInstallBanner();
+  });
+}
+if(installCloseBtn){
+  installCloseBtn.addEventListener('click', function(){
+    localStorage.setItem('tlpos_install_dismissed','yes');
+    hideInstallBanner();
+  });
+}
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('tlpos_installed','yes');
+  hideInstallBanner();
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(){ console.log('TLpos PWA ready'); })
+      .catch(function(err){ console.error('Service worker registration failed', err); });
+  });
+}
+window.addEventListener('load', function(){ if(isAppInstalledMode()) hideInstallBanner(); });
+</script>
+
+</body></html>`);
     w.document.close();
   } else {
-    const pa=document.getElementById('inv-print-area');
-    pa.innerHTML='<div style="background:white;padding:20px;text-align:center;">'+content+'</div>';
-    pa.style.display='block';window.print();setTimeout(()=>pa.style.display='none',1500);
+    // Fallback for restricted WebView
+    const pa = document.getElementById('inv-print-area');
+    pa.innerHTML = '<div style="background:white;padding:20px;text-align:center;">'+content+'</div>';
+    pa.style.display='block';
+    window.print();
+    setTimeout(()=>pa.style.display='none',1500);
   }
 }
 
-// ════ PWA — SERVICE WORKER & INSTALL ════
-let swReg = null, deferredPrompt = null;
-
-// ── Is already installed (standalone)? ──
-const isStandalone = () =>
-  window.matchMedia('(display-mode: standalone)').matches ||
-  window.navigator.standalone === true ||
-  document.referrer.includes('android-app://');
-
-const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-// ── Service Worker ──
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      swReg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-      console.log('[PWA] SW registered:', swReg.scope);
-      setInterval(() => swReg.update(), 60000);
-      swReg.addEventListener('updatefound', () => {
-        const newSW = swReg.installing;
-        newSW.addEventListener('statechange', () => {
-          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-            document.getElementById('update-toast').classList.add('show');
-          }
-        });
-      });
-    } catch (err) {
-      console.warn('[PWA] SW failed:', err);
-    }
-  });
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) { refreshing = true; window.location.reload(); }
-  });
-}
-
-// ── Show/hide install card on home page ──
-function checkInstallCard() {
-  const card = document.getElementById('install-card');
-  if (!card) return;
-  if (isStandalone()) {
-    // Already installed — never show
-    card.style.display = 'none';
-    return;
-  }
-  if (isIOS()) {
-    // iOS: show manual hint (no prompt API)
-    card.style.display = 'flex';
-    document.getElementById('ios-hint').style.display = 'block';
-    document.getElementById('install-btn').style.display = 'none';
-  } else if (deferredPrompt) {
-    // Android/Desktop: prompt ready
-    card.style.display = 'flex';
-    document.getElementById('ios-hint').style.display = 'none';
-    document.getElementById('install-btn').style.display = 'inline-block';
-  } else {
-    // Prompt not yet fired — hide for now
-    card.style.display = 'none';
-  }
-}
-
-// ── beforeinstallprompt — capture & show card ──
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  checkInstallCard();
-  // Also remove old floating banner
-  document.getElementById('pwa-banner').classList.remove('show');
-});
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('install-card').style.display = 'none';
-  document.getElementById('pwa-banner').classList.remove('show');
-  deferredPrompt = null;
-  Swal.fire({ title: '✅ App Installed!', text: 'TLpos Pro home screen eke add වුණා!', icon: 'success', timer: 2500, showConfirmButton: false });
-});
-
-async function installPWA() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    document.getElementById('install-card').style.display = 'none';
-    localStorage.setItem('pwa_installed', '1');
-  }
-  deferredPrompt = null;
-}
-
-// Legacy banner (keep for compat but hide)
-function dismissBanner() {
-  document.getElementById('pwa-banner').classList.remove('show');
-  localStorage.setItem('pwa_dismissed', '1');
-}
-
-function reloadForUpdate() {
-  document.getElementById('update-toast').classList.remove('show');
-  if (swReg && swReg.waiting) swReg.waiting.postMessage({ type: 'SKIP_WAITING' });
-  else window.location.reload();
-}
-
-// ── Online / Offline ──
-function updateOnlineStatus() {
-  const badge = document.getElementById('offline-badge');
-  if (badge) {
-    if (navigator.onLine) badge.classList.remove('show');
-    else badge.classList.add('show');
-  }
-}
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-
-// ── Hash routing ──
-window.addEventListener('DOMContentLoaded', () => {
-  checkInstallCard();
-  const hash = location.hash;
-  if (hash === '#scan') { navTo('s-scan'); setTimeout(startScanner, 600); }
-  else if (hash === '#reg') navTo('s-reg');
-});
-
-// Also re-check when navigating to home
-const _origNavTo = navTo;
-// patch: checkInstallCard when home is shown
-const _checkOnHome = (id) => { if (id === 's-home') checkInstallCard(); };
 </script>
+
+<script>
+// ══ PWA INSTALL BUTTON ══
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const installBtn = document.getElementById('pwa-install-btn');
+const installCloseBtn = document.getElementById('pwa-install-close');
+
+function isAppInstalledMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function hideInstallBanner(){ if(installBanner) installBanner.classList.remove('show'); }
+function showInstallBanner(){
+  if(!installBanner) return;
+  if(isAppInstalledMode()) return hideInstallBanner();
+  if(localStorage.getItem('tlpos_install_dismissed') === 'yes') return;
+  installBanner.classList.add('show');
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+if(installBtn){
+  installBtn.addEventListener('click', async function(){
+    if(!deferredInstallPrompt){
+      Swal.fire('Install Help', 'Chrome menu ⋮ → Add to Home screen / Install app තෝරන්න.', 'info');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if(choice && choice.outcome === 'accepted') hideInstallBanner();
+  });
+}
+if(installCloseBtn){
+  installCloseBtn.addEventListener('click', function(){
+    localStorage.setItem('tlpos_install_dismissed','yes');
+    hideInstallBanner();
+  });
+}
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('tlpos_installed','yes');
+  hideInstallBanner();
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(){ console.log('TLpos PWA ready'); })
+      .catch(function(err){ console.error('Service worker registration failed', err); });
+  });
+}
+window.addEventListener('load', function(){ if(isAppInstalledMode()) hideInstallBanner(); });
+</script>
+
 </body>
 </html>
